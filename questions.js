@@ -1,3 +1,10 @@
+const TOPICS = {
+  sampling: "Mintavétel és standard hiba",
+  tests: "Hipotézisvizsgálat és próbák",
+  variance: "Varianciaanalízis és illeszkedés",
+  relationship: "Kapcsolatvizsgálat és korreláció"
+};
+
 window.quizQuestions = [
   {
     source: "Korábbi kérdések",
@@ -334,96 +341,193 @@ window.quizQuestions = [
   },
   {
     source: "I. ZH / igazhamis.docx",
-    title: "Standard hiba számítása",
-    question: "Egy 400 elemű egyszerű véletlen minta alapján a tömegek átlaga 98,5 g, szórása 4 g. Add meg az átlag standard hibáját grammban.",
-    answer: "0,2 gramm",
+    title: "Véletlen mintavétel",
+    question: "Mit jelent a véletlen mintavétel? A mintaelemeket …… választjuk ki. Válassza ki a helyes állítást!",
+    options: [
+      "előre nem ismert valószínűséggel",
+      "előre ismert valószínűséggel",
+      "találomra",
+      "szubjektív módon"
+    ],
+    answer: "előre ismert valószínűséggel",
     explanation: [
-      "A standard hiba képlete: SE = s / √n.",
-      "SE = 4 / √400 = 4 / 20 = 0,2 gramm.",
-      "A 4 gramm a minta szórása, nem a standard hiba."
-    ]
-  },
-  {
-    source: "I. ZH / igazhamis.docx",
-    title: "Egymintás átlagvizsgálat próbaértéke",
-    question: "Egy 100 elemű mintában az átlag 98,5 g, a szórás 2 g. Normális eloszlás feltételezhető. 5%-os szinten a H0: μ = 100 hipotézis vizsgálatánál mennyi a próbafüggvény értéke?",
-    answer: "-7,5",
-    explanation: [
-      "A standard hiba: s / √n = 2 / 10 = 0,2.",
-      "t = (98,5 - 100) / 0,2 = -1,5 / 0,2 = -7,5.",
-      "Ez nagyon távol van 0-tól, ezért H0 elutasítható."
+      "A véletlen mintavétel lényege, hogy a sokaság elemei nem önkényesen, hanem ismert kiválasztási valószínűségek alapján kerülnek be a mintába. Ez biztosítja, hogy a mintavétel szabályozott és statisztikailag kezelhető legyen.",
+      "Az „előre nem ismert valószínűséggel” azért hibás, mert akkor nem tudnánk korrekt valószínűségi modellt felállítani.",
+      "A „találomra” hétköznapi értelemben hasonlónak tűnhet, de statisztikailag pontatlan.",
+      "A „szubjektív módon” pedig épp az ellenkezője a véletlen mintavételnek."
     ]
   },
   {
     source: "I. ZH / igazhamis.docx",
     title: "Nem i.i.d. minta",
-    question: "Melyik esetben nem független, azonos eloszlású mintát kapunk a mintavételezés során?",
-    answer: "Véges sokaságból visszatevés nélkül.",
+    question: "Melyik esetben nem független azonos eloszlású mintát kapunk a mintavételezés során?",
+    options: [
+      "Ha véges sokaságból visszatevés nélkül veszünk mintát.",
+      "Ha véges sokaságból visszatevéssel veszünk mintát.",
+      "Ha végtelen sokaságból visszatevés nélkül veszünk mintát.",
+      "Ha végtelen sokaságból visszatevéssel veszünk mintát."
+    ],
+    answer: "Ha véges sokaságból visszatevés nélkül veszünk mintát.",
     explanation: [
-      "Véges sokaságból visszatevés nélkül az egyik elem kiválasztása hat a következő kiválasztás esélyére.",
-      "Ez megszünteti a függetlenséget."
-    ]
-  },
-  {
-    source: "I. ZH / igazhamis.docx",
-    title: "Hipotézisvizsgálat döntése",
-    question: "A hipotézisvizsgálat során miről döntünk közvetlenül?",
-    answer: "Közvetlenül a nullhipotézisről döntünk.",
-    explanation: [
-      "A döntés formálisan mindig H0-ra vonatkozik.",
-      "Vagy elutasítjuk H0-t, vagy nem utasítjuk el H0-t."
-    ]
-  },
-  {
-    source: "I. ZH / igazhamis.docx",
-    title: "Csoportos mintavétel hatásossága",
-    question: "Milyen esetben lesz a csoportos mintavétel sokkal kevésbé hatásos, mint az ugyanolyan elemszámú egyszerű véletlen minta?",
-    answer: "Ha a vizsgált ismérv szerint a csoportok homogének.",
-    explanation: [
-      "Csoportos mintavételnél az a jó, ha a kiválasztott csoportok belül heterogének, vagyis jól reprezentálják a teljes sokaságot.",
-      "Ha a csoportok homogének, nagyobb lehet a mintavételi hiba."
-    ]
-  },
-  {
-    source: "I. ZH / igazhamis.docx",
-    title: "Csoportos mintavétel oka",
-    question: "Mikor kényszerülünk csoportos mintavételre?",
-    answer: "Ha nincs, lehetetlen vagy drága a sokasági lista összeállítása.",
-    explanation: [
-      "Egyszerű véletlen mintához teljes mintavételi keret kell.",
-      "Ha ez nem áll rendelkezésre vagy túl drága, gyakran csoportos mintavételt használunk."
-    ]
-  },
-  {
-    source: "I. ZH / igazhamis.docx",
-    title: "Mintavételi hiba állításai",
-    question: "Egyszerű mintavétel esetén mely állítások igazak? 1. A mintavételi hiba a sokasági szórás növekedésével nő. 2. A mintavételi hiba a mintanagyság növekedésével nő. 3. A mintavételi hiba a sokasági elemszám növekedésével nő. 4. A mintavételi hiba független a minta elemszámától.",
-    answer: "Igaz, hamis, hamis, hamis.",
-    explanation: [
-      "A standard hiba alapesetben SE = σ / √n.",
-      "Nő a sokasági szórással, és csökken a mintanagyság növekedésével.",
-      "Nem független a minta elemszámától."
-    ]
-  },
-  {
-    source: "I. ZH / igazhamis.docx",
-    title: "Véletlen mintavétel",
-    question: "Mit jelent a véletlen mintavétel? A mintaelemeket milyen módon választjuk ki?",
-    answer: "Előre ismert valószínűséggel.",
-    explanation: [
-      "A valószínűségi mintavételnél a kiválasztási valószínűségek ismertek.",
-      "A „véletlen” itt nem összevisszaságot, hanem szabályozott valószínűségi mechanizmust jelent."
+      "A független, azonos eloszlású (iid) minta egyik feltétele, hogy az egyes húzások ne befolyásolják egymást.",
+      "Véges sokaságból visszatevés nélkül mintát véve ez nem teljesül: ha egyszer egy elemet kivettünk, az már nem kerülhet újra kiválasztásra.",
+      "Emiatt a következő húzások valószínűsége megváltozik, tehát ebben az esetben a mintaelemek nem függetlenek."
     ]
   },
   {
     source: "I. ZH / igazhamis.docx",
     title: "Másodfajú hiba értelmezése",
-    question: "Egy konzervgyár akkor veszi át az őszibarackot, ha a sérült barackok részaránya legfeljebb 6%. Milyen esetben követi el a konzervgyár a másodfajú hibát?",
-    answer: "Valójában rossz a szállítmány, de a gyár elfogadja.",
+    question: "Egy konzervgyár azzal a feltétellel veszi át a termelőtől az őszibarackot, hogy a szállítmányban a „sérült” barackok részaránya a 6%-ot nem haladja meg. A hipotézist mintavétellel tesztelik. Milyen esetben követi el a konzervgyár a másodfajú hibát?",
+    options: [
+      "A mintában a „sérült” őszibarackok részaránya 6% alatt van, ezért a gyár a szállítmányt átveszi.",
+      "A szállítmányban a „sérült” barackok részaránya 6% alatt van, de a gyár azt mégsem veszi át.",
+      "A mintában a „sérült” őszibarackok részaránya 6% felett van, ezért a gyár a szállítmányt nem veszi át.",
+      "A szállítmányban a „sérült” barackok részaránya 6% felett van, de a gyár azt mégis átveszi."
+    ],
+    answer: "A szállítmányban a „sérült” barackok részaránya 6% felett van, de a gyár azt mégis átveszi.",
     explanation: [
-      "Itt H0: p ≤ 0,06, vagyis a szállítmány megfelelő.",
-      "H1: p > 0,06, vagyis túl sok a sérült barack.",
-      "Másodfajú hiba: H0 hamis, de nem utasítjuk el. Itt ez azt jelenti, hogy p > 0,06, de a gyár mégis átveszi a szállítmányt."
+      "A másodfajú hiba azt jelenti, hogy a valóságban a nullhipotézis hamis, de mi ezt nem utasítjuk el.",
+      "Itt a gyár érdeke alapján: H0: a sérült barackok aránya nem haladja meg a 6%-ot; H1: a sérült barackok aránya meghaladja a 6%-ot.",
+      "Másodfajú hiba akkor van, ha a valóságban rossz a szállítmány, vagyis 6% felett van a sérültek aránya, de a gyár mégis úgy dönt, hogy rendben van, és átveszi.",
+      "Az 1. és 3. opció csak mintabeli eredményt ír le, nem biztos, hogy hibáról van szó.",
+      "A 2. opció inkább elsőfajú hiba: valójában jó a szállítmány, de mégsem veszik át."
+    ]
+  },
+  {
+    source: "I. ZH / igazhamis.docx",
+    title: "Csoportos mintavétel oka",
+    question: "Mikor kényszerülünk csoportos mintavételre? Válassza ki a helyes állítást!",
+    options: [
+      "Ha rendelkezésünkre áll a sokaság minden elemét tartalmazó lista",
+      "Minden olyan esetben, ha a sokaság elemszáma (N) több, mint 10 000",
+      "Ha nincs vagy lehetetlen, vagy drága egy sokasági lista összeállítása.",
+      "Minden olyan esetben, ha a sokaság elemszáma (N) kevesebb, mint 10 000"
+    ],
+    answer: "Ha nincs vagy lehetetlen, vagy drága egy sokasági lista összeállítása.",
+    explanation: [
+      "A csoportos mintavétel akkor hasznos, amikor a teljes alapsokaság elemeiről nem áll rendelkezésre teljes lista, vagy annak elkészítése túl drága vagy nehéz lenne.",
+      "Ilyenkor nem egyedi elemeket, hanem előbb csoportokat választunk ki.",
+      "Például iskolákból választunk, és azon belül tanulókat; vagy településekből választunk, és azon belül háztartásokat.",
+      "Ha van teljes lista, akkor gyakran egyszerű véletlen mintavétel is megoldható. A 10 000-es határ teljesen önkényes."
+    ]
+  },
+  {
+    source: "I. ZH / igazhamis.docx",
+    title: "Csoportos mintavétel hatásossága",
+    question: "Milyen esetben lesz a csoportos mintavétel sokkal kevésbé hatásos, mint az ugyanolyan elemszámú egyszerű véletlen (EV) minta? Válassza ki a helyes állítást!",
+    options: [
+      "Ha a vizsgált ismérv szerint a csoportok heterogének.",
+      "Ha a vizsgált ismérv szerint a csoportok homogének.",
+      "Minden esetben hatásosabb a csoportos mintavétel, mint az EV minta.",
+      "Minden esetben az EV minta hatásosabb, mint a csoportos mintavétel."
+    ],
+    answer: "Ha a vizsgált ismérv szerint a csoportok homogének.",
+    explanation: [
+      "A csoportos mintavétel akkor működik rosszabbul, ha a csoportokon belül az elemek nagyon hasonlóak egymáshoz, vagyis a csoportok homogének.",
+      "Ilyenkor ha kiválasztunk néhány csoportot, azokból kevés új információt nyerünk, mert egy csoport elemei egymásra nagyon hasonlítanak.",
+      "Ezért a mintában kisebb lesz a valódi változatosság, és a becslés pontossága romlik az egyszerű véletlen mintához képest."
+    ]
+  },
+  {
+    source: "I. ZH / igazhamis.docx",
+    title: "Hipotézisvizsgálat döntése",
+    question: "A hipotézisvizsgálat során …",
+    options: [
+      "közvetlenül a nullhipotézisről döntünk.",
+      "közvetlenül az alternatív hipotézisről döntünk.",
+      "közvetve a nullhipotézisről döntünk.",
+      "közvetve a megbízhatósági szintről döntünk."
+    ],
+    answer: "közvetve a nullhipotézisről döntünk.",
+    explanation: [
+      "Hipotézisvizsgálatban formálisan mindig a nullhipotézisre (H0) vonatkozóan döntünk: vagy elutasítjuk, vagy nem utasítjuk el.",
+      "Ez a döntés azonban közvetett, mert nem magát a teljes sokaságot látjuk, hanem csak a mintából számolt próbaértéket vizsgáljuk.",
+      "Vagyis a mintából következtetünk a nullhipotézis elfogadhatóságára.",
+      "Azért nem „közvetlenül” döntünk, mert nincs teljes bizonyosságunk a sokaságról, csak valószínűségi alapon következtetünk."
+    ]
+  },
+  {
+    source: "I. ZH / igazhamis.docx",
+    title: "Mintavételi hiba állításai",
+    question: "Igazak-e vagy hamisak az alábbi állítások egyszerű mintavétel esetén? 1. A mintavételi hiba a sokasági szórás növekedésével nő. 2. A mintavételi hiba a mintanagyság növekedésével nő. 3. A mintavételi hiba a sokasági elemszám növekedésével nő. 4. A mintavételi hiba független a minta elemszámától.",
+    answer: "1. Igaz. 2. Hamis. 3. Hamis. 4. Hamis.",
+    explanation: [
+      "1. Igaz: a standard hiba képletében a sokaság vagy annak becsült szórása szerepel. Minél nagyobb a szórás, annál nagyobb az adatok ingadozása, ezért annál nagyobb a mintavételi bizonytalanság is.",
+      "2. Hamis: nagyobb minta esetén a becslés pontosabb lesz. A standard hiba tipikusan 1 / √n szerint csökken, tehát ha nő a mintanagyság, a mintavételi hiba csökken.",
+      "3. Hamis: önmagában attól, hogy a sokaság nagyobb, nem lesz nagyobb a mintavételi hiba. Nagy sokaságoknál a standard hiba főként a szórástól és a mintanagyságtól függ.",
+      "4. Hamis: a mintavételi hiba nem független a minta elemszámától, hanem erősen függ tőle. Nagyobb mintából általában kisebb hibával becslünk."
+    ]
+  },
+  {
+    source: "I. ZH / igazhamis.docx",
+    title: "Egymintás átlagvizsgálat próbaértéke",
+    question: "Egy 100 elemű minta alapján vizsgálták a táblás csokoládé átlagos nettó tömegét. A minta alapján a mért tömegek átlaga 98,5 g-nak, szórása 2 g-nak adódott. A sokaság normális eloszlása feltételezhető. Döntsön 5%-os szignifikancia szinten arról, hogy az átlagos nettó tömeg 100 g. Számítsa ki a megfelelő próbafüggvény értékét!",
+    answer: "-7,5",
+    explanation: [
+      "Adatok: n = 100, x̄ = 98,5, s = 2, μ0 = 100.",
+      "A standard hiba: s / √n = 2 / √100 = 2 / 10 = 0,2.",
+      "A próbafüggvény: t = (x̄ - μ0) / (s / √n).",
+      "Behelyettesítve: t = (98,5 - 100) / 0,2 = -1,5 / 0,2 = -7,5.",
+      "Ez nagyon nagy abszolút érték, vagyis a mintaátlag messze van a 100 grammos feltételezéstől."
+    ]
+  },
+  {
+    source: "I. ZH / igazhamis.docx",
+    title: "Standard hiba számítása",
+    question: "Egy 400 elemű egyszerű véletlen minta alapján megbecsülték az adott napon előállított 3 000 db táblás csokoládé átlagos nettó tömegét. A minta alapján a tömegek átlaga 98,5 g-nak, szórása 4 grammnak adódott. Adja meg a standard hibát grammban!",
+    answer: "0,2 gramm",
+    explanation: [
+      "Adatok: n = 400, s = 4.",
+      "A standard hiba: SE = s / √n.",
+      "Behelyettesítve: SE = 4 / √400 = 4 / 20 = 0,2.",
+      "A standard hiba azt mutatja meg, hogy a mintaátlag milyen mértékben ingadozna mintáról mintára.",
+      "Itt a szórás 4, a mintanagyság 400, ezért a standard hiba 4 / 20 = 0,2 gramm."
     ]
   }
 ];
+
+const TOPIC_BY_TITLE = {
+  "Mintavételi függetlenség": TOPICS.sampling,
+  "Azonos eloszlású minta": TOPICS.sampling,
+  "Rétegzett mintavétel": TOPICS.sampling,
+  "Ismert szórás": TOPICS.tests,
+  "Szórás becslése": TOPICS.tests,
+  "Ismeretlen szórás": TOPICS.tests,
+  "Rétegzés és standard hiba": TOPICS.sampling,
+  "Nem arányos rétegzés": TOPICS.sampling,
+  "Rétegzett mintavétel pontossága": TOPICS.sampling,
+  "Egymintás t-próba": TOPICS.tests,
+  "Másodfajú hiba": TOPICS.tests,
+  "Nullhipotézis alakja": TOPICS.tests,
+  "Kétmintás t-próba": TOPICS.tests,
+  "F-próba szórásokra": TOPICS.tests,
+  "Két szórás tesztelése": TOPICS.tests,
+  "ANOVA": TOPICS.variance,
+  "Függetlenségvizsgálat célja": TOPICS.relationship,
+  "Illeszkedésvizsgálat": TOPICS.variance,
+  "Függetlenségvizsgálat hipotézisei": TOPICS.relationship,
+  "Cramer-féle asszociációs együttható": TOPICS.relationship,
+  "Független kapcsolat": TOPICS.relationship,
+  "Korrelációs hányados nulla értéke": TOPICS.relationship,
+  "Eltérés-négyzetösszegek": TOPICS.variance,
+  "H-mutató": TOPICS.relationship,
+  "Rangkorreláció ordinális skálán": TOPICS.relationship,
+  "Lineáris korreláció": TOPICS.relationship,
+  "Rangkorreláció arányskálán": TOPICS.relationship,
+  "Korrelációs együttható értékkészlete": TOPICS.relationship,
+  "Standard hiba számítása": TOPICS.sampling,
+  "Egymintás átlagvizsgálat próbaértéke": TOPICS.tests,
+  "Nem i.i.d. minta": TOPICS.sampling,
+  "Hipotézisvizsgálat döntése": TOPICS.tests,
+  "Csoportos mintavétel hatásossága": TOPICS.sampling,
+  "Csoportos mintavétel oka": TOPICS.sampling,
+  "Mintavételi hiba állításai": TOPICS.sampling,
+  "Véletlen mintavétel": TOPICS.sampling,
+  "Másodfajú hiba értelmezése": TOPICS.tests
+};
+
+window.quizTopics = Object.values(TOPICS);
+window.quizQuestions = window.quizQuestions.map(question => ({
+  ...question,
+  topic: TOPIC_BY_TITLE[question.title] || "Egyéb"
+}));

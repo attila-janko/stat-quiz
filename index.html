@@ -54,6 +54,7 @@
       display: flex;
       flex-direction: column;
       gap: 28px;
+      overflow: auto;
     }
 
     .brand {
@@ -125,11 +126,64 @@
       font-size: 0.82rem;
     }
 
+    .topic-section {
+      display: grid;
+      gap: 10px;
+    }
+
+    .topic-title {
+      margin: 0;
+      color: #cbd5e1;
+      font-size: 0.82rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .topic-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .topic-button {
+      width: 100%;
+      min-height: 46px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 8px;
+      background: transparent;
+      color: #f8fafc;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+      padding: 9px 10px;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .topic-button:hover,
+    .topic-button.active {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.34);
+    }
+
+    .topic-button span:first-child {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .topic-score {
+      color: #cbd5e1;
+      font-size: 0.78rem;
+      white-space: nowrap;
+    }
+
     .question-list {
       display: grid;
       gap: 8px;
       margin-top: auto;
-      max-height: calc(100vh - 240px);
+      max-height: min(38vh, 280px);
       overflow: auto;
       padding-right: 4px;
     }
@@ -512,7 +566,7 @@
           <div class="mark" aria-hidden="true"><span></span><span></span><span></span></div>
           <div>
             <h1>Statisztika kvíz</h1>
-            <p class="subtitle">Igaz-hamis gyakorlás az órai anyagból.</p>
+            <p class="subtitle">Témakörös gyakorlás az órai anyagból.</p>
           </div>
         </div>
       </div>
@@ -523,10 +577,23 @@
           <span>helyes</span>
         </div>
         <div class="metric">
-          <strong id="answered">0/9</strong>
+          <strong id="answered">0/0</strong>
           <span>megoldva</span>
         </div>
+        <div class="metric">
+          <strong id="topicPercent">0%</strong>
+          <span>témakör</span>
+        </div>
+        <div class="metric">
+          <strong id="topicAnswered">0/0</strong>
+          <span>témán belül</span>
+        </div>
       </div>
+
+      <section class="topic-section" aria-label="Témakörök">
+        <p class="topic-title">Témakörök</p>
+        <div class="topic-list" id="topicList"></div>
+      </section>
 
       <nav class="question-list" id="questionList" aria-label="Kérdések"></nav>
     </aside>
@@ -563,9 +630,12 @@
   <script src="questions.js"></script>
   <script>
     const quiz = window.quizQuestions || [];
+    const ALL_TOPICS = "Összes";
+    const topics = [ALL_TOPICS, ...(window.quizTopics || [...new Set(quiz.map(item => item.topic || "Egyéb"))])];
 
     const state = {
       current: 0,
+      topic: ALL_TOPICS,
       selected: null,
       answers: Array(quiz.length).fill(null)
     };
@@ -573,6 +643,9 @@
     const els = {
       score: document.getElementById("score"),
       answered: document.getElementById("answered"),
+      topicPercent: document.getElementById("topicPercent"),
+      topicAnswered: document.getElementById("topicAnswered"),
+      topicList: document.getElementById("topicList"),
       questionList: document.getElementById("questionList"),
       progressLabel: document.getElementById("progressLabel"),
       progressPercent: document.getElementById("progressPercent"),
@@ -600,16 +673,67 @@
       return Array.isArray(item.options) && item.options.length > 0;
     }
 
+    function getQuestionTopic(item) {
+      return item.topic || "Egyéb";
+    }
+
+    function getVisibleIndexes() {
+      return quiz
+        .map((item, index) => ({ item, index }))
+        .filter(({ item }) => state.topic === ALL_TOPICS || getQuestionTopic(item) === state.topic)
+        .map(({ index }) => index);
+    }
+
+    function getTopicStats(topic) {
+      const indexes = quiz
+        .map((item, index) => ({ item, index }))
+        .filter(({ item }) => topic === ALL_TOPICS || getQuestionTopic(item) === topic)
+        .map(({ index }) => index);
+      const answered = indexes.filter(index => state.answers[index] && state.answers[index].correct !== null).length;
+      const correct = indexes.filter(index => state.answers[index]?.correct).length;
+      const percent = answered ? Math.round((correct / answered) * 100) : 0;
+
+      return { indexes, answered, correct, percent, total: indexes.length };
+    }
+
+    function setTopic(topic) {
+      state.topic = topic;
+      const visibleIndexes = getVisibleIndexes();
+      state.current = visibleIndexes.includes(state.current) ? state.current : visibleIndexes[0];
+      state.selected = state.answers[state.current]?.choice || null;
+      render();
+    }
+
+    function getVisiblePosition() {
+      const visibleIndexes = getVisibleIndexes();
+      return Math.max(0, visibleIndexes.indexOf(state.current));
+    }
+
+    function renderTopicList() {
+      els.topicList.innerHTML = "";
+
+      topics.forEach(topic => {
+        const stats = getTopicStats(topic);
+        const button = document.createElement("button");
+        button.className = `topic-button${topic === state.topic ? " active" : ""}`;
+        button.type = "button";
+        button.innerHTML = `<span>${escapeHtml(topic)}</span><span class="topic-score">${stats.answered}/${stats.total} · ${stats.percent}%</span>`;
+        button.addEventListener("click", () => setTopic(topic));
+        els.topicList.appendChild(button);
+      });
+    }
+
     function renderJumpList() {
       els.questionList.innerHTML = "";
 
-      quiz.forEach((item, index) => {
+      getVisibleIndexes().forEach((index, visibleIndex) => {
+        const item = quiz[index];
         const button = document.createElement("button");
         const status = state.answers[index];
         button.className = `question-jump${index === state.current ? " active" : ""}`;
         button.type = "button";
         const statusClass = status && status.correct !== null ? (status.correct ? "correct" : "wrong") : "";
-        button.innerHTML = `<span>${index + 1}. kérdés</span><span class="status-dot ${statusClass}"></span>`;
+        button.innerHTML = `<span>${visibleIndex + 1}. kérdés</span><span class="status-dot ${statusClass}"></span>`;
         button.addEventListener("click", () => {
           state.current = index;
           state.selected = state.answers[index]?.choice || null;
@@ -623,8 +747,10 @@
       const item = quiz[state.current];
       const saved = state.answers[state.current];
       const isChoiceQuestion = hasOptions(item);
+      const visiblePosition = getVisiblePosition();
+      const visibleTotal = getVisibleIndexes().length;
 
-      els.questionNumber.textContent = `${state.current + 1}. kérdés · ${item.source || "Kérdésbank"}${item.title ? ` · ${item.title}` : ""}`;
+      els.questionNumber.textContent = `${visiblePosition + 1}. kérdés / ${visibleTotal} · ${getQuestionTopic(item)} · ${item.source || "Kérdésbank"}${item.title ? ` · ${item.title}` : ""}`;
       els.questionText.textContent = item.question;
       els.options.innerHTML = "";
 
@@ -663,7 +789,7 @@
 
       els.submit.textContent = isChoiceQuestion ? "Válasz beküldése" : "Válasz megmutatása";
       els.submit.disabled = isChoiceQuestion ? (!state.selected || Boolean(saved)) : Boolean(saved);
-      els.next.textContent = state.current === quiz.length - 1 ? "Befejezés" : "Következő";
+      els.next.textContent = visiblePosition === visibleTotal - 1 ? "Témakör vége" : "Következő";
       renderFeedback();
     }
 
@@ -702,19 +828,23 @@
     }
 
     function renderStats() {
-      const answered = state.answers.filter(answer => answer && answer.correct !== null).length;
+      const overallAnswered = state.answers.filter(answer => answer && answer.correct !== null).length;
       const correct = state.answers.filter(answer => answer?.correct).length;
-      const percent = Math.round((answered / quiz.length) * 100);
+      const topicStats = getTopicStats(state.topic);
+      const topicCompletion = topicStats.total ? Math.round((topicStats.answered / topicStats.total) * 100) : 0;
+      const visiblePosition = getVisiblePosition();
 
       els.score.textContent = String(correct);
-      els.answered.textContent = `${answered}/${quiz.length}`;
-      els.progressLabel.textContent = `${state.current + 1} / ${quiz.length}`;
-      els.progressPercent.textContent = `${percent}%`;
-      els.progressBar.style.width = `${percent}%`;
+      els.answered.textContent = `${overallAnswered}/${quiz.length}`;
+      els.topicPercent.textContent = `${topicStats.percent}%`;
+      els.topicAnswered.textContent = `${topicStats.answered}/${topicStats.total}`;
+      els.progressLabel.textContent = `${visiblePosition + 1} / ${topicStats.total}`;
+      els.progressPercent.textContent = `${topicCompletion}% kész`;
+      els.progressBar.style.width = `${topicCompletion}%`;
 
-      if (answered === quiz.length) {
+      if (topicStats.answered === topicStats.total) {
         els.complete.className = "complete show";
-        els.complete.innerHTML = `<h2>Eredmény: ${correct}/${quiz.length}</h2><p>A kvíz végére értél. Az oldalsó kérdésekre kattintva bármelyik magyarázatot újra meg tudod nézni.</p>`;
+        els.complete.innerHTML = `<h2>${escapeHtml(state.topic)}: ${topicStats.correct}/${topicStats.total} (${topicStats.percent}%)</h2><p>A témakör végére értél. Az oldalsó kérdésekre kattintva bármelyik magyarázatot újra meg tudod nézni.</p>`;
       } else {
         els.complete.className = "complete";
         els.complete.innerHTML = "";
@@ -723,6 +853,7 @@
 
     function render() {
       renderStats();
+      renderTopicList();
       renderJumpList();
       renderQuestion();
     }
@@ -740,13 +871,17 @@
     });
 
     els.next.addEventListener("click", () => {
-      state.current = Math.min(state.current + 1, quiz.length - 1);
+      const visibleIndexes = getVisibleIndexes();
+      const visiblePosition = visibleIndexes.indexOf(state.current);
+      const nextPosition = Math.min(visiblePosition + 1, visibleIndexes.length - 1);
+      state.current = visibleIndexes[nextPosition];
       state.selected = state.answers[state.current]?.choice || null;
       render();
     });
 
     els.reset.addEventListener("click", () => {
       state.current = 0;
+      state.topic = ALL_TOPICS;
       state.selected = null;
       state.answers = Array(quiz.length).fill(null);
       render();
