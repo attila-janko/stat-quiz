@@ -462,6 +462,169 @@ window.quizQuestions = [
       "A standard hiba azt mutatja meg, hogy a mintaátlag milyen mértékben ingadozna mintáról mintára.",
       "Itt a szórás 4, a mintanagyság 400, ezért a standard hiba körülbelül 0,186 gramm."
     ]
+  },
+  {
+    source: "Új gyakorló kérdés",
+    title: "Intervallumbecslés z-eloszlással",
+    question: "Egy normális eloszlású sokaság várható értékére szeretnénk konfidenciaintervallumot adni. A sokasági szórás ismert. Melyik eloszlás táblázatos értékét használjuk?",
+    options: [
+      "Student-féle t-eloszlás",
+      "Normális eloszlás, z-érték",
+      "Khi-négyzet eloszlás",
+      "F-eloszlás"
+    ],
+    answer: "Normális eloszlás, z-érték",
+    explanation: [
+      "Ha a sokasági szórás ismert, akkor a várható érték intervallumbecslésénél z-eloszlást használunk.",
+      "A t-eloszlás akkor kerül elő, ha a sokasági szórás ismeretlen, és mintaszórással becsüljük."
+    ]
+  },
+  {
+    source: "Új gyakorló kérdés",
+    title: "Konfidenciaintervallum értelmezése",
+    question: "Mit jelent helyesen a 95%-os konfidenciaintervallum értelmezése?",
+    options: [
+      "95% annak a valószínűsége, hogy a konkrét kiszámított intervallumban benne van a sokasági átlag.",
+      "Ha nagyon sok mintából számolnánk intervallumot ugyanígy, ezek kb. 95%-a tartalmazná a valódi sokasági paramétert.",
+      "A mintaelemek 95%-a biztosan az intervallumba esik.",
+      "A sokaság 95%-a biztosan az intervallumba esik."
+    ],
+    answer: "Ha nagyon sok mintából számolnánk intervallumot ugyanígy, ezek kb. 95%-a tartalmazná a valódi sokasági paramétert.",
+    explanation: [
+      "A konfidenciaszint az eljárás hosszú távú megbízhatóságára vonatkozik.",
+      "A konkrét intervallum már rögzített: vagy tartalmazza a paramétert, vagy nem.",
+      "Nem azt jelenti, hogy a mintaelemek vagy a sokaság 95%-a esik bele."
+    ]
+  },
+  {
+    source: "Új gyakorló kérdés",
+    title: "Mintanagyság és intervallumszélesség",
+    question: "Mi történik a várható értékre adott konfidenciaintervallum szélességével, ha minden más változatlan, de a mintanagyság nő?",
+    options: [
+      "Szélesebb lesz.",
+      "Keskenyebb lesz.",
+      "Nem változik.",
+      "Mindig pontosan kétszeresére nő."
+    ],
+    answer: "Keskenyebb lesz.",
+    explanation: [
+      "A standard hiba képlete s / √n vagy σ / √n.",
+      "Ha nő a mintanagyság, a nevező nő, ezért a standard hiba csökken.",
+      "Emiatt az intervallum is keskenyebb lesz."
+    ]
+  },
+  {
+    source: "Új gyakorló kérdés",
+    title: "Szórás intervallumbecslése",
+    question: "Normális eloszlású sokaság szórására vagy varianciájára szeretnénk konfidenciaintervallumot adni. Melyik eloszlást használjuk?",
+    options: [
+      "Normális eloszlás",
+      "Student-féle t-eloszlás",
+      "Khi-négyzet eloszlás",
+      "Binomiális eloszlás"
+    ],
+    answer: "Khi-négyzet eloszlás",
+    explanation: [
+      "Normális sokaság esetén a variancia intervallumbecslése khi-négyzet eloszláson alapul.",
+      "A z- és t-eloszlás inkább várható érték becslésénél jelenik meg."
+    ]
+  },
+  {
+    source: "Új gyakorló kérdés",
+    title: "Konfidenciaszint és intervallumszélesség",
+    question: "Melyik változás növeli a konfidenciaintervallum szélességét, ha minden más változatlan?",
+    options: [
+      "A mintanagyság növelése",
+      "A szórás csökkenése",
+      "A konfidenciaszint növelése",
+      "A standard hiba csökkenése"
+    ],
+    answer: "A konfidenciaszint növelése",
+    explanation: [
+      "Magasabb konfidenciaszinthez nagyobb kritikus érték tartozik.",
+      "Emiatt az intervallum szélesebb lesz: nagyobb biztonságot kérünk, ezért nagyobb tartományt kell megadnunk."
+    ]
+  },
+  {
+    source: "Új gyakorló kérdés",
+    title: "Nullhipotézis elutasítása",
+    question: "Mikor utasítjuk el a nullhipotézist egy hipotézisvizsgálat során?",
+    options: [
+      "Ha a próbafüggvény értéke az elfogadási tartományba esik.",
+      "Ha a próbafüggvény értéke a kritikus tartományba esik.",
+      "Ha a minta elemszáma nagyobb, mint 30.",
+      "Ha a nullhipotézis szövegében egyenlőségjel szerepel."
+    ],
+    answer: "Ha a próbafüggvény értéke a kritikus tartományba esik.",
+    explanation: [
+      "A kritikus tartomány azokból az értékekből áll, amelyek H0 fennállása mellett túl szélsőségesnek számítanak.",
+      "Ha a próbafüggvény ide esik, akkor H0-t elutasítjuk."
+    ]
+  },
+  {
+    source: "Új gyakorló kérdés",
+    title: "Elsőfajú hiba",
+    question: "Mit jelent az elsőfajú hiba hipotézisvizsgálatban?",
+    options: [
+      "Igaz nullhipotézist utasítunk el.",
+      "Hamis nullhipotézist nem utasítunk el.",
+      "Igaz alternatív hipotézist utasítunk el.",
+      "Hamis alternatív hipotézist fogadunk el."
+    ],
+    answer: "Igaz nullhipotézist utasítunk el.",
+    explanation: [
+      "Elsőfajú hiba akkor történik, ha H0 valójában igaz, de a minta alapján mégis elutasítjuk.",
+      "Ennek valószínűsége a szignifikanciaszint, vagyis α."
+    ]
+  },
+  {
+    source: "Új gyakorló kérdés",
+    title: "Próbafüggvény előjele",
+    question: "Egy egymintás várhatóérték-vizsgálatnál a próbafüggvény értéke negatív lett. Mit jelent ez?",
+    options: [
+      "A mintaátlag kisebb, mint a nullhipotézisben szereplő érték.",
+      "A mintaátlag nagyobb, mint a nullhipotézisben szereplő érték.",
+      "A nullhipotézist biztosan el kell fogadni.",
+      "A próba biztosan hibás."
+    ],
+    answer: "A mintaátlag kisebb, mint a nullhipotézisben szereplő érték.",
+    explanation: [
+      "Egymintás átlagvizsgálatnál a próbafüggvény tipikusan t = (x̄ - μ0) / (s / √n).",
+      "A nevező pozitív, ezért az előjelet az x̄ - μ0 különbség adja.",
+      "Negatív próbaérték azt jelenti, hogy a mintaátlag kisebb, mint a nullhipotézisben feltételezett érték."
+    ]
+  },
+  {
+    source: "Új gyakorló kérdés",
+    title: "Kétoldali próba felismerése",
+    question: "Milyen próbát kell alkalmazni, ha az alternatív hipotézis így szól: H1: μ ≠ 100?",
+    options: [
+      "Bal oldali próbát",
+      "Jobb oldali próbát",
+      "Kétoldali próbát",
+      "F-próbát"
+    ],
+    answer: "Kétoldali próbát",
+    explanation: [
+      "A „≠” jel azt jelenti, hogy mindkét irányú eltérés érdekel.",
+      "Az átlag lehet kisebb vagy nagyobb is 100-nál, ezért kétoldali próbát használunk."
+    ]
+  },
+  {
+    source: "Új gyakorló kérdés",
+    title: "Szignifikanciaszint csökkentése",
+    question: "Mi történik általában, ha a szignifikanciaszintet 5%-ról 1%-ra csökkentjük?",
+    options: [
+      "Könnyebb lesz elutasítani H0-t.",
+      "Nehezebb lesz elutasítani H0-t.",
+      "Biztosan nő a próbaérték.",
+      "A mintaátlag megváltozik."
+    ],
+    answer: "Nehezebb lesz elutasítani H0-t.",
+    explanation: [
+      "Kisebb α szigorúbb döntési szabályt jelent.",
+      "A kritikus tartomány kisebb lesz, ezért csak szélsőségesebb próbaérték esetén utasítjuk el H0-t."
+    ]
   }
 ];
 
@@ -502,7 +665,17 @@ const TOPIC_BY_TITLE = {
   "Csoportos mintavétel oka": TOPICS.sampling,
   "Mintavételi hiba állításai": TOPICS.sampling,
   "Véletlen mintavétel": TOPICS.sampling,
-  "Másodfajú hiba értelmezése": TOPICS.tests
+  "Másodfajú hiba értelmezése": TOPICS.tests,
+  "Intervallumbecslés z-eloszlással": TOPICS.sampling,
+  "Konfidenciaintervallum értelmezése": TOPICS.sampling,
+  "Mintanagyság és intervallumszélesség": TOPICS.sampling,
+  "Szórás intervallumbecslése": TOPICS.sampling,
+  "Konfidenciaszint és intervallumszélesség": TOPICS.sampling,
+  "Nullhipotézis elutasítása": TOPICS.tests,
+  "Elsőfajú hiba": TOPICS.tests,
+  "Próbafüggvény előjele": TOPICS.tests,
+  "Kétoldali próba felismerése": TOPICS.tests,
+  "Szignifikanciaszint csökkentése": TOPICS.tests
 };
 
 window.quizTopics = Object.values(TOPICS);
