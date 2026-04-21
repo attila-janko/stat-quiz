@@ -2,7 +2,10 @@
 <html lang="hu">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1"> <! -- test -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Statisztika igaz-hamis kvíz</title>
   <style>
     :root {
@@ -627,7 +630,13 @@
     </main>
   </div>
 
-  <script src="questions.js"></script>
+  <script>
+    if ("caches" in window) {
+      caches.keys().then(keys => keys.forEach(key => caches.delete(key)));
+    }
+
+    document.write(`<script src="questions.js?v=${Date.now()}"><\/script>`);
+  </script>
   <script>
     const quiz = window.quizQuestions || [];
     const ALL_TOPICS = "Összes";
