@@ -157,23 +157,6 @@ window.quizQuestions = [
   },
   {
     source: "3. óra / igazhamis.docx",
-    title: "F-próba szórásokra",
-    question: "Két 13-13 elemű normális minta esetén x1 = 38, Σd1² = 1330, x2 = 39,5, Σd2² = 588. Vizsgáljuk, hogy az első típus szórása nagyobb-e. Melyik válasz helyes?",
-    options: [
-      "Próbafüggvény: 2,26; elfogadási tartomány: 0,36-2,75; H0-t elfogadjuk (nagyobb)",
-      "Próbafüggvény: 2,26; elfogadási tartomány: 0-2,75; H0-t elfogadjuk (nem nagyobb)",
-      "Próbafüggvény: 2,26; elfogadási tartomány: 0-3,25; H0-t elfogadjuk (nagyobb)",
-      "Próbafüggvény: 1,50; elfogadási tartomány: 0,31-3,25; H0-t elfogadjuk (nem nagyobb)"
-    ],
-    answer: "Próbafüggvény: 2,26; elfogadási tartomány: 0-2,75; H0-t elfogadjuk (nem nagyobb)",
-    explanation: [
-      "Két normális sokaság szórásának összehasonlítására F-próbát használunk.",
-      "s1² = 1330 / 12 = 110,83 és s2² = 588 / 12 = 49, így F = 110,83 / 49 ≈ 2,26.",
-      "A H0 elfogadása itt azt jelenti, hogy nem igazolható, hogy az első szórás nagyobb."
-    ]
-  },
-  {
-    source: "3. óra / igazhamis.docx",
     title: "Két szórás tesztelése",
     question: "Két sokasági szórás tesztelésénél a próbafüggvényünk a χ².",
     options: ["Igaz", "Hamis"],
@@ -384,13 +367,12 @@ window.quizQuestions = [
       "A mintában a „sérült” őszibarackok részaránya 6% felett van, ezért a gyár a szállítmányt nem veszi át.",
       "A szállítmányban a „sérült” barackok részaránya 6% felett van, de a gyár azt mégis átveszi."
     ],
-    answer: "A szállítmányban a „sérült” barackok részaránya 6% felett van, de a gyár azt mégis átveszi.",
+    answer: "A mintában a „sérült” őszibarackok részaránya 6% alatt van, ezért a gyár a szállítmányt átveszi.",
     explanation: [
-      "A másodfajú hiba azt jelenti, hogy a valóságban a nullhipotézis hamis, de mi ezt nem utasítjuk el.",
+      "A másodfajú hiba azt jelenti, hogy a valóságban a nullhipotézis hamis, de mi ezt nem utasítjuk el (elfogadjuk).",
       "Itt a gyár érdeke alapján: H0: a sérült barackok aránya nem haladja meg a 6%-ot; H1: a sérült barackok aránya meghaladja a 6%-ot.",
       "Másodfajú hiba akkor van, ha a valóságban rossz a szállítmány, vagyis 6% felett van a sérültek aránya, de a gyár mégis úgy dönt, hogy rendben van, és átveszi.",
-      "Az 1. és 3. opció csak mintabeli eredményt ír le, nem biztos, hogy hibáról van szó.",
-      "A 2. opció inkább elsőfajú hiba: valójában jó a szállítmány, de mégsem veszik át."
+      "Az 1. szól arról, hogy a mintában 6% alatt van, ezért a döntés szerint elfogadja a szállítmányt, de ez nem feltétlenül jelenti a valóságban is, hogy a szállítmány rendben van."
     ]
   },
   {
@@ -438,23 +420,20 @@ window.quizQuestions = [
       "közvetve a nullhipotézisről döntünk.",
       "közvetve a megbízhatósági szintről döntünk."
     ],
-    answer: "közvetve a nullhipotézisről döntünk.",
+    answer: "közvetlenül a nullhipotézisről döntünk.",
     explanation: [
-      "Hipotézisvizsgálatban formálisan mindig a nullhipotézisre (H0) vonatkozóan döntünk: vagy elutasítjuk, vagy nem utasítjuk el.",
-      "Ez a döntés azonban közvetett, mert nem magát a teljes sokaságot látjuk, hanem csak a mintából számolt próbaértéket vizsgáljuk.",
-      "Vagyis a mintából következtetünk a nullhipotézis elfogadhatóságára.",
-      "Azért nem „közvetlenül” döntünk, mert nincs teljes bizonyosságunk a sokaságról, csak valószínűségi alapon következtetünk."
+      "Hipotézisvizsgálatban formálisan mindig a nullhipotézisre (H0) vonatkozóan döntünk: vagy elutasítjuk, vagy nem utasítjuk el."
     ]
   },
   {
     source: "I. ZH / igazhamis.docx",
     title: "Mintavételi hiba állításai",
     question: "Igazak-e vagy hamisak az alábbi állítások egyszerű mintavétel esetén? 1. A mintavételi hiba a sokasági szórás növekedésével nő. 2. A mintavételi hiba a mintanagyság növekedésével nő. 3. A mintavételi hiba a sokasági elemszám növekedésével nő. 4. A mintavételi hiba független a minta elemszámától.",
-    answer: "1. Igaz. 2. Hamis. 3. Hamis. 4. Hamis.",
+    answer: "1. Igaz. 2. Hamis. 3. Igaz. 4. Hamis.",
     explanation: [
       "1. Igaz: a standard hiba képletében a sokaság vagy annak becsült szórása szerepel. Minél nagyobb a szórás, annál nagyobb az adatok ingadozása, ezért annál nagyobb a mintavételi bizonytalanság is.",
       "2. Hamis: nagyobb minta esetén a becslés pontosabb lesz. A standard hiba tipikusan 1 / √n szerint csökken, tehát ha nő a mintanagyság, a mintavételi hiba csökken.",
-      "3. Hamis: önmagában attól, hogy a sokaság nagyobb, nem lesz nagyobb a mintavételi hiba. Nagy sokaságoknál a standard hiba főként a szórástól és a mintanagyságtól függ.",
+      "3. Igaz: a korrekciós tényező miatt a mintavételi hiba növekszik, ha a sokaság elemszáma (N) nő. (képlet)",
       "4. Hamis: a mintavételi hiba nem független a minta elemszámától, hanem erősen függ tőle. Nagyobb mintából általában kisebb hibával becslünk."
     ]
   },
@@ -475,13 +454,13 @@ window.quizQuestions = [
     source: "I. ZH / igazhamis.docx",
     title: "Standard hiba számítása",
     question: "Egy 400 elemű egyszerű véletlen minta alapján megbecsülték az adott napon előállított 3 000 db táblás csokoládé átlagos nettó tömegét. A minta alapján a tömegek átlaga 98,5 g-nak, szórása 4 grammnak adódott. Adja meg a standard hibát grammban!",
-    answer: "0,2 gramm",
+    answer: "kb. 0,186 gramm",
     explanation: [
-      "Adatok: n = 400, s = 4.",
-      "A standard hiba: SE = s / √n.",
-      "Behelyettesítve: SE = 4 / √400 = 4 / 20 = 0,2.",
+      "Adatok: n = 400, s = 4, N = 3000.",
+      "A standard hiba: SE = (s / √n)*√(1- n/N).",
+      "Behelyettesítve: SE = (4 / √400)*√(1- 400/3000) = (4 / 20)*√(1- 0,133) = 0,2*√0,867 ≈ 0,2*0,931 ≈ 0,186.",
       "A standard hiba azt mutatja meg, hogy a mintaátlag milyen mértékben ingadozna mintáról mintára.",
-      "Itt a szórás 4, a mintanagyság 400, ezért a standard hiba 4 / 20 = 0,2 gramm."
+      "Itt a szórás 4, a mintanagyság 400, ezért a standard hiba körülbelül 0,186 gramm."
     ]
   }
 ];
