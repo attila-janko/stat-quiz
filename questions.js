@@ -9,7 +9,7 @@ window.quizQuestions = [
   {
     source: "Korábbi kérdések",
     title: "Mintavételi függetlenség",
-    question: "TESZT A mintaelemek nem lesznek függetlenek egymástól, ha végtelen sokaságból akár visszatevéssel, akár visszatevés nélkül; illetve véges sokaságból visszatevéssel vesszük a mintát.",
+    question: "A mintaelemek nem lesznek függetlenek egymástól, ha végtelen sokaságból akár visszatevéssel, akár visszatevés nélkül; illetve véges sokaságból visszatevéssel vesszük a mintát.",
     options: ["Igaz", "Hamis"],
     answer: "Hamis",
     explanation: [
