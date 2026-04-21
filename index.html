@@ -129,6 +129,9 @@
       display: grid;
       gap: 8px;
       margin-top: auto;
+      max-height: calc(100vh - 240px);
+      overflow: auto;
+      padding-right: 4px;
     }
 
     .question-jump {
@@ -388,6 +391,46 @@
       margin-bottom: 0;
     }
 
+    .free-answer {
+      width: 100%;
+      min-height: 120px;
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      resize: vertical;
+      color: var(--ink);
+      background: #ffffff;
+      line-height: 1.5;
+      font: inherit;
+    }
+
+    .self-grade {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .self-grade button {
+      min-height: 40px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      padding: 0 14px;
+      background: #ffffff;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .self-grade button:first-child {
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    .self-grade button:last-child {
+      border-color: var(--red);
+      color: var(--red);
+    }
+
     .complete {
       display: none;
       padding: 34px;
@@ -423,6 +466,7 @@
 
       .question-list {
         grid-template-columns: repeat(3, minmax(0, 1fr));
+        max-height: none;
         margin-top: 0;
       }
 
@@ -516,111 +560,9 @@
     </main>
   </div>
 
+  <script src="questions.js"></script>
   <script>
-    const quiz = [
-      {
-        number: 1,
-        question: "A mintaelemek nem lesznek függetlenek egymástól, ha végtelen sokaságból akár visszatevéssel, akár visszatevés nélkül; illetve véges sokaságból visszatevéssel vesszük a mintát.",
-        options: ["Igaz", "Hamis"],
-        answer: "Hamis",
-        explanation: [
-          "Ez az állítás azért hamis, mert pont a felsorolt esetek többségében függetlenek lesznek a mintaelemek.",
-          "A függetlenség lényege: az egyik kiválasztás eredménye nem befolyásolja a másikét.",
-          "Végtelen sokaságból visszatevéssel a húzások függetlenek, mert a sokaság nem változik érdemben. Végtelen sokaságból visszatevés nélkül gyakorlatilag ugyanaz a helyzet, így a függetlenség fennmarad.",
-          "Véges sokaságból visszatevéssel is függetlenek a húzások, mert minden húzás után visszakerül az elem.",
-          "Nem függetlenek: véges sokaságból visszatevés nélkül, mert a kivett elem megváltoztatja a következő húzás valószínűségeit."
-        ]
-      },
-      {
-        number: 2,
-        question: "A független, azonos eloszlású minta esetén a minta elemeinek eloszlása megegyezik a sokaság eloszlásával.",
-        options: ["Igaz", "Hamis"],
-        answer: "Igaz",
-        explanation: [
-          "A független, azonos eloszlású minta pontosan ezt jelenti: a mintaelemek egymástól függetlenek, és mind ugyanabból az eloszlásból származnak.",
-          "Ha a sokaság eloszlása normális, akkor minden egyes mintaelem is ebből a normális eloszlásból származik. Ha a sokaság binomiális jellegű, akkor a mintaelemek is ennek megfelelő eloszlásúak lesznek.",
-          "Fontos: nem azt állítjuk, hogy minden levezetett mutató eloszlása ugyanaz, hanem azt, hogy a minta egyes elemei ugyanabból az eloszlásból jönnek, mint a sokaság."
-        ]
-      },
-      {
-        number: 3,
-        question: "A vizsgált ismérv szerinti homogén sokaságból veszünk rétegzett mintát.",
-        options: ["Igaz", "Hamis"],
-        answer: "Hamis",
-        explanation: [
-          "A rétegzett mintavétel lényege pont az, hogy a teljes sokaság nem homogén, hanem több, egymástól eltérő csoportra bontható.",
-          "A jó rétegzés célja: a rétegeken belül legyen homogén a sokaság, a rétegek egymástól pedig legyenek különbözők.",
-          "Tehát nem az egész sokaság homogén, hanem az egyes rétegek belül homogének.",
-          "Például jövedelem vizsgálatánál a teljes népesség nem homogén, de korcsoport, régió vagy iskolai végzettség szerint homogénebb rétegekre bontható."
-        ]
-      },
-      {
-        number: 5,
-        question: "A sokaság várható értékének becslésénél, normális eloszlású sokaság esetén, ha a sokaság szórása ismert, a Student-féle t-eloszlás (t) táblázatos értékével dolgozunk.",
-        options: ["Igaz", "Hamis"],
-        answer: "Hamis",
-        explanation: [
-          "Ha a sokaság szórása ismert, akkor a várható érték becslésénél z-eloszlást használunk, nem t-eloszlást.",
-          "Szabály: ismert sokasági szórás esetén z, ismeretlen sokasági szórás, kis minta és normális sokaság esetén t.",
-          "A Student-féle t-eloszlás akkor kell, amikor a sokasági szórást nem ismerjük, és a mintaszórással helyettesítjük. Ez plusz bizonytalanságot visz be."
-        ]
-      },
-      {
-        number: 6,
-        question: "A sokasági szórás becslésénél a t- és/vagy a z-táblázatos értékeket alkalmazzuk.",
-        options: ["Igaz", "Hamis"],
-        answer: "Hamis",
-        explanation: [
-          "A sokasági szórás vagy variancia becslésénél nem t- és nem z-eloszlást, hanem khi-négyzet eloszlást használunk.",
-          "A várható érték becslésénél jellemzően z vagy t szerepel, de variancia és szórás becslésénél a khi-négyzet eloszlás a megfelelő.",
-          "Normális sokaság esetén a minta varianciájára vonatkozó statisztika khi-négyzet eloszlást követ, ezért erre épül a konfidenciaintervallum."
-        ]
-      },
-      {
-        number: 7,
-        question: "A sokaság várható értékének becslésénél, normális eloszlású sokaság esetén, ha a sokaság szórása nem ismert és a minta kicsi, a Student-féle t-eloszlás (t) táblázatos értékével dolgozunk.",
-        options: ["Igaz", "Hamis"],
-        answer: "Igaz",
-        explanation: [
-          "Ez a klasszikus t-eloszlásos eset.",
-          "A t-eloszlást akkor használjuk, ha a sokaság normális, a sokasági szórás nem ismert, és a minta kicsi.",
-          "Ilyenkor a mintaszórást használjuk a sokasági szórás helyett, emiatt a normális eloszláshoz képest nagyobb bizonytalanság jelenik meg, ezt kezeli a t-eloszlás."
-        ]
-      },
-      {
-        number: 8,
-        question: "A rétegzés alkalmazása növeli a standard hiba nagyságát.",
-        options: ["Igaz", "Hamis"],
-        answer: "Hamis",
-        explanation: [
-          "A rétegzés célja épp az, hogy csökkentse a becslési hibát, vagyis tipikusan csökkentse a standard hibát.",
-          "Ha a sokaságot olyan rétegekre bontjuk, amelyek belül homogénebbek, egymástól pedig különböznek, akkor a rétegeken belüli szórás kisebb lesz.",
-          "A kisebb rétegen belüli szórás pontosabb becslést eredményezhet."
-        ]
-      },
-      {
-        number: 9,
-        question: "Nem arányos rétegzés esetén a standard hiba számításához a teljes szórás szükséges.",
-        options: ["Igaz", "Hamis"],
-        answer: "Hamis",
-        explanation: [
-          "Nem arányos rétegzésnél a standard hiba számítása nem a teljes sokaság egyetlen közös szórására épül.",
-          "A számítás a rétegenkénti szórásoktól, a rétegsúlyoktól és a rétegenkénti mintanagyságoktól függ.",
-          "Ha nem arányos a rétegzés, akkor egyes rétegekből szándékosan többet vagy kevesebbet veszünk, mint amit az arányos kiválasztás indokolna, ezért külön kell kezelni a rétegeket."
-        ]
-      },
-      {
-        number: 10,
-        question: "Rétegzett mintavételnél a becslés pontossága csak a rétegeken belüli szóródástól függ.",
-        options: ["Igaz", "Hamis"],
-        answer: "Hamis",
-        explanation: [
-          "A csak szó miatt hamis.",
-          "A pontosság valóban erősen függ a rétegeken belüli szóródástól, de nem kizárólag attól.",
-          "Függ még a rétegek nagyságától, a rétegek súlyától, a rétegenkénti mintanagyságtól, attól, hogy arányos vagy nem arányos a rétegzés, és esetenként a véges sokaság korrekciójától is."
-        ]
-      }
-    ];
+    const quiz = window.quizQuestions || [];
 
     const state = {
       current: 0,
@@ -645,6 +587,19 @@
       complete: document.getElementById("completeBox")
     };
 
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function hasOptions(item) {
+      return Array.isArray(item.options) && item.options.length > 0;
+    }
+
     function renderJumpList() {
       els.questionList.innerHTML = "";
 
@@ -653,7 +608,8 @@
         const status = state.answers[index];
         button.className = `question-jump${index === state.current ? " active" : ""}`;
         button.type = "button";
-        button.innerHTML = `<span>${item.number}. kérdés</span><span class="status-dot ${status ? (status.correct ? "correct" : "wrong") : ""}"></span>`;
+        const statusClass = status && status.correct !== null ? (status.correct ? "correct" : "wrong") : "";
+        button.innerHTML = `<span>${index + 1}. kérdés</span><span class="status-dot ${statusClass}"></span>`;
         button.addEventListener("click", () => {
           state.current = index;
           state.selected = state.answers[index]?.choice || null;
@@ -666,16 +622,29 @@
     function renderQuestion() {
       const item = quiz[state.current];
       const saved = state.answers[state.current];
+      const isChoiceQuestion = hasOptions(item);
 
-      els.questionNumber.textContent = `${item.number}. kérdés`;
-      els.questionText.textContent = `„${item.question}”`;
+      els.questionNumber.textContent = `${state.current + 1}. kérdés · ${item.source || "Kérdésbank"}${item.title ? ` · ${item.title}` : ""}`;
+      els.questionText.textContent = item.question;
       els.options.innerHTML = "";
 
-      item.options.forEach(option => {
+      if (!isChoiceQuestion) {
+        const textarea = document.createElement("textarea");
+        textarea.className = "free-answer";
+        textarea.placeholder = "Ide írhatod a saját válaszod, aztán ellenőrizheted a megoldással.";
+        textarea.value = saved?.choice || state.selected || "";
+        textarea.disabled = Boolean(saved);
+        textarea.addEventListener("input", () => {
+          state.selected = textarea.value;
+        });
+        els.options.appendChild(textarea);
+      }
+
+      if (isChoiceQuestion) item.options.forEach(option => {
         const button = document.createElement("button");
         const isSelected = (saved?.choice || state.selected) === option;
-        const isCorrect = saved && option === item.answer;
-        const isWrong = saved && saved.choice === option && option !== item.answer;
+        const isCorrect = saved && saved.correct !== null && option === item.answer;
+        const isWrong = saved && saved.correct !== null && saved.choice === option && option !== item.answer;
         button.className = [
           "option",
           isSelected ? "selected" : "",
@@ -692,7 +661,8 @@
         els.options.appendChild(button);
       });
 
-      els.submit.disabled = !state.selected || Boolean(saved);
+      els.submit.textContent = isChoiceQuestion ? "Válasz beküldése" : "Válasz megmutatása";
+      els.submit.disabled = isChoiceQuestion ? (!state.selected || Boolean(saved)) : Boolean(saved);
       els.next.textContent = state.current === quiz.length - 1 ? "Befejezés" : "Következő";
       renderFeedback();
     }
@@ -707,18 +677,32 @@
         return;
       }
 
-      els.feedback.className = `feedback show ${saved.correct ? "correct" : "wrong"}`;
-      const title = saved.correct
-        ? `Helyes: ${item.answer}`
-        : `Nem pontos. A helyes válasz: ${item.answer}`;
+      const graded = saved.correct !== null;
+      els.feedback.className = `feedback show ${!graded ? "" : (saved.correct ? "correct" : "wrong")}`;
+      const title = !graded
+        ? `Helyes válasz: ${item.answer}`
+        : saved.correct
+          ? `Helyes: ${item.answer}`
+          : `Nem pontos. A helyes válasz: ${item.answer}`;
       els.feedback.innerHTML = [
-        `<h2>${title}</h2>`,
-        ...item.explanation.map(text => `<p>${text}</p>`)
+        `<h2>${escapeHtml(title)}</h2>`,
+        ...item.explanation.map(text => `<p>${escapeHtml(text)}</p>`),
+        !graded ? `<div class="self-grade"><button type="button" data-self-grade="true">Tudtam</button><button type="button" data-self-grade="false">Nem tudtam</button></div>` : ""
       ].join("");
+
+      els.feedback.querySelectorAll("[data-self-grade]").forEach(button => {
+        button.addEventListener("click", () => {
+          state.answers[state.current] = {
+            ...state.answers[state.current],
+            correct: button.dataset.selfGrade === "true"
+          };
+          render();
+        });
+      });
     }
 
     function renderStats() {
-      const answered = state.answers.filter(Boolean).length;
+      const answered = state.answers.filter(answer => answer && answer.correct !== null).length;
       const correct = state.answers.filter(answer => answer?.correct).length;
       const percent = Math.round((answered / quiz.length) * 100);
 
@@ -745,11 +729,12 @@
 
     els.submit.addEventListener("click", () => {
       const item = quiz[state.current];
-      if (!state.selected) return;
+      const isChoiceQuestion = hasOptions(item);
+      if (isChoiceQuestion && !state.selected) return;
 
       state.answers[state.current] = {
-        choice: state.selected,
-        correct: state.selected === item.answer
+        choice: state.selected || "",
+        correct: isChoiceQuestion ? state.selected === item.answer : null
       };
       render();
     });
