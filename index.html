@@ -673,6 +673,23 @@
       return Array.isArray(item.options) && item.options.length > 0;
     }
 
+    function shuffleOptions(options) {
+      const shuffled = [...options];
+
+      for (let index = shuffled.length - 1; index > 0; index -= 1) {
+        const randomIndex = Math.floor(Math.random() * (index + 1));
+        [shuffled[index], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[index]];
+      }
+
+      return shuffled;
+    }
+
+    quiz.forEach(item => {
+      if (hasOptions(item)) {
+        item.shuffledOptions = shuffleOptions(item.options);
+      }
+    });
+
     function getQuestionTopic(item) {
       return item.topic || "Egyéb";
     }
@@ -766,7 +783,7 @@
         els.options.appendChild(textarea);
       }
 
-      if (isChoiceQuestion) item.options.forEach(option => {
+      if (isChoiceQuestion) item.shuffledOptions.forEach(option => {
         const button = document.createElement("button");
         const isSelected = (saved?.choice || state.selected) === option;
         const isCorrect = saved && saved.correct !== null && option === item.answer;
