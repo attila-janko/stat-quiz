@@ -694,14 +694,10 @@
         ...details
       });
 
-      if (navigator.sendBeacon) {
-        navigator.sendBeacon(TRACKING_ENDPOINT, new Blob([payload], { type: "text/plain" }));
-        return;
-      }
-
       fetch(TRACKING_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "text/plain" },
+        mode: "cors",
         body: payload,
         keepalive: true
       }).catch(() => {});
