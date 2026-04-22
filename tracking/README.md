@@ -1,6 +1,6 @@
-# Visitor tracking
+# Visitor stats
 
-This folder contains a Cloudflare Worker tracker for the GitHub Pages quiz.
+This folder contains a Cloudflare Worker API for lightweight GitHub Pages quiz stats.
 
 It stores:
 
@@ -25,7 +25,7 @@ It does not store raw IP addresses.
 8. In `index.html`, set:
 
 ```js
-const TRACKING_ENDPOINT = "https://YOUR-WORKER.YOUR-SUBDOMAIN.workers.dev";
+const TRACKING_ENDPOINT = "https://stat-quiz-api.YOUR-SUBDOMAIN.workers.dev";
 ```
 
 ## Reading stats
@@ -33,7 +33,7 @@ const TRACKING_ENDPOINT = "https://YOUR-WORKER.YOUR-SUBDOMAIN.workers.dev";
 Open:
 
 ```text
-https://YOUR-WORKER.YOUR-SUBDOMAIN.workers.dev/summary
+https://stat-quiz-api.YOUR-SUBDOMAIN.workers.dev/summary
 ```
 
 The response contains the last 30 days of daily totals and topic-level aggregates.

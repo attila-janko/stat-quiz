@@ -185,14 +185,14 @@ export default {
       return getSummary(env, origin);
     }
 
-    if (request.method === "GET" && url.pathname === "/collect") {
+    if (request.method === "GET" && url.pathname === "/ping") {
       return recordVisitFromQuery(request, env, origin);
     }
 
     if (request.method === "GET" && url.pathname === "/") {
       return json({
         ok: true,
-        message: "Stat quiz tracker is running. Open /summary for stats."
+        message: "Stat quiz API is running. Open /summary for stats."
       }, {}, origin, env);
     }
 
