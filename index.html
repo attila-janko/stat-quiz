@@ -639,7 +639,7 @@
   </script>
   <script>
     const quiz = window.quizQuestions || [];
-    const TRACKING_ENDPOINT = "stat-quiz-tracker.atti199.workers.dev";
+    const TRACKING_ENDPOINT = "https://stat-quiz-tracker.atti199.workers.dev";
     const ALL_TOPICS = "Összes";
     const topics = [ALL_TOPICS, ...(window.quizTopics || [...new Set(quiz.map(item => item.topic || "Egyéb"))])];
 
