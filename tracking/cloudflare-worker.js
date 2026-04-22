@@ -5,9 +5,17 @@ const JSON_HEADERS = {
 
 function corsHeaders(origin, env) {
   const allowedOrigin = env.ALLOWED_ORIGIN || "*";
-  const allowOrigin = allowedOrigin === "*" || !origin || origin === allowedOrigin
-    ? allowedOrigin
-    : "null";
+  const normalizedOrigin = origin?.replace(/\/$/, "");
+  const allowedOrigins = allowedOrigin
+    .split(",")
+    .map(value => value.trim().replace(/\/$/, ""))
+    .filter(Boolean);
+  const allowOrigin = !origin
+    || allowedOrigins.includes("*")
+    || allowedOrigins.includes(normalizedOrigin)
+    || normalizedOrigin?.endsWith(".github.io")
+    ? (origin || "*")
+    : allowedOrigins[0] || "*";
 
   return {
     "Access-Control-Allow-Origin": allowOrigin,
@@ -72,7 +80,8 @@ function asBooleanInteger(value) {
 
 async function readBody(request) {
   try {
-    return await request.json();
+    const text = await request.text();
+    return text ? JSON.parse(text) : {};
   } catch {
     return {};
   }

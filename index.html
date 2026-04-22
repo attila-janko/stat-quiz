@@ -695,13 +695,13 @@
       });
 
       if (navigator.sendBeacon) {
-        navigator.sendBeacon(TRACKING_ENDPOINT, new Blob([payload], { type: "application/json" }));
+        navigator.sendBeacon(TRACKING_ENDPOINT, new Blob([payload], { type: "text/plain" }));
         return;
       }
 
       fetch(TRACKING_ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "text/plain" },
         body: payload,
         keepalive: true
       }).catch(() => {});
