@@ -20,6 +20,7 @@ It does not store raw IP addresses.
 5. Add Worker environment variables:
    - `TRACKING_SALT`: any long random string
    - `ALLOWED_ORIGIN`: your GitHub Pages origin, for example `https://USERNAME.github.io`
+   - `DASHBOARD_TOKEN`: any long private string used to open the dashboard
 6. Paste `cloudflare-worker.js` into the Worker and deploy it.
 7. Copy the Worker URL.
 8. In `index.html`, set:
@@ -33,10 +34,16 @@ const TRACKING_ENDPOINT = "https://stat-quiz-api.YOUR-SUBDOMAIN.workers.dev";
 Open:
 
 ```text
-https://stat-quiz-api.YOUR-SUBDOMAIN.workers.dev/summary
+https://stat-quiz-api.YOUR-SUBDOMAIN.workers.dev/dashboard?token=YOUR_DASHBOARD_TOKEN
 ```
 
-The response contains the last 30 days of daily totals and topic-level aggregates.
+The dashboard shows the last 30 days of daily totals and topic-level aggregates.
+
+You can also read the raw JSON:
+
+```text
+https://stat-quiz-api.YOUR-SUBDOMAIN.workers.dev/summary?token=YOUR_DASHBOARD_TOKEN
+```
 
 ## Privacy note
 
