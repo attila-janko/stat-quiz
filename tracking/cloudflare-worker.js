@@ -88,8 +88,8 @@ async function readBody(request) {
   }
 }
 
-async function recordVisit(request, env, origin) {
-  const body = await readBody(request);
+async function recordVisit(request, env, origin, body = null) {
+  body = body || await readBody(request);
   const day = getDay();
   const visitorHash = await getVisitorHash(request, env, day);
   const event = normalizeEvent(body.event);
@@ -114,6 +114,28 @@ async function recordVisit(request, env, origin) {
   `).bind(day, visitorHash, event, path, topic, questionTitle, correct, country).run();
 
   return json({ ok: true }, { status: 202 }, origin, env);
+}
+
+async function recordVisitFromQuery(request, env, origin) {
+  const url = new URL(request.url);
+  const encoded = url.searchParams.get("d");
+  let body = {};
+
+  try {
+    body = encoded ? JSON.parse(encoded) : {};
+  } catch {
+    body = {};
+  }
+
+  await recordVisit(request, env, origin, body);
+
+  return new Response(null, {
+    status: 204,
+    headers: {
+      "Cache-Control": "no-store",
+      ...corsHeaders(origin, env)
+    }
+  });
 }
 
 async function getSummary(env, origin) {
@@ -161,6 +183,17 @@ export default {
 
     if (request.method === "GET" && url.pathname === "/summary") {
       return getSummary(env, origin);
+    }
+
+    if (request.method === "GET" && url.pathname === "/collect") {
+      return recordVisitFromQuery(request, env, origin);
+    }
+
+    if (request.method === "GET" && url.pathname === "/") {
+      return json({
+        ok: true,
+        message: "Stat quiz tracker is running. Open /summary for stats."
+      }, {}, origin, env);
     }
 
     if (request.method === "POST") {

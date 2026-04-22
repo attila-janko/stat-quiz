@@ -694,13 +694,8 @@
         ...details
       });
 
-      fetch(TRACKING_ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain" },
-        mode: "cors",
-        body: payload,
-        keepalive: true
-      }).catch(() => {});
+      const beacon = new Image();
+      beacon.src = `${TRACKING_ENDPOINT}/collect?d=${encodeURIComponent(payload)}&t=${Date.now()}`;
     }
 
     function shuffleOptions(options) {
