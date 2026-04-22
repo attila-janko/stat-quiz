@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="hu">
 <head>
-  <meta charset="utf-8"> <!teszt>
-  <meta name="viewport" content="width=device-width, initial-scale=1"> 
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
@@ -639,6 +639,7 @@
   </script>
   <script>
     const quiz = window.quizQuestions || [];
+    const TRACKING_ENDPOINT = "stat-quiz-tracker.atti199.workers.dev";
     const ALL_TOPICS = "Összes";
     const topics = [ALL_TOPICS, ...(window.quizTopics || [...new Set(quiz.map(item => item.topic || "Egyéb"))])];
 
@@ -680,6 +681,30 @@
 
     function hasOptions(item) {
       return Array.isArray(item.options) && item.options.length > 0;
+    }
+
+    function trackEvent(event, details = {}) {
+      if (!TRACKING_ENDPOINT) return;
+
+      const payload = JSON.stringify({
+        event,
+        path: location.pathname,
+        topic: state.topic,
+        questionTitle: quiz[state.current]?.title || null,
+        ...details
+      });
+
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon(TRACKING_ENDPOINT, new Blob([payload], { type: "application/json" }));
+        return;
+      }
+
+      fetch(TRACKING_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload,
+        keepalive: true
+      }).catch(() => {});
     }
 
     function shuffleOptions(options) {
@@ -727,6 +752,7 @@
       const visibleIndexes = getVisibleIndexes();
       state.current = visibleIndexes.includes(state.current) ? state.current : visibleIndexes[0];
       state.selected = state.answers[state.current]?.choice || null;
+      trackEvent("topic_change", { topic });
       render();
     }
 
@@ -844,10 +870,16 @@
 
       els.feedback.querySelectorAll("[data-self-grade]").forEach(button => {
         button.addEventListener("click", () => {
+          const correct = button.dataset.selfGrade === "true";
           state.answers[state.current] = {
             ...state.answers[state.current],
-            correct: button.dataset.selfGrade === "true"
+            correct
           };
+          trackEvent("answer", {
+            correct,
+            questionTitle: item.title,
+            topic: getQuestionTopic(item)
+          });
           render();
         });
       });
@@ -893,6 +925,11 @@
         choice: state.selected || "",
         correct: isChoiceQuestion ? state.selected === item.answer : null
       };
+      trackEvent("answer", {
+        correct: state.answers[state.current].correct,
+        questionTitle: item.title,
+        topic: getQuestionTopic(item)
+      });
       render();
     });
 
@@ -914,6 +951,7 @@
     });
 
     render();
+    trackEvent("page_view");
   </script>
 </body>
 </html>
