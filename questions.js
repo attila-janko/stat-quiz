@@ -926,6 +926,199 @@ window.quizQuestions = [
       "A 0,8-as szezonindex azt jelenti, hogy az adott negyedév értéke a trendérték 80%-a.",
       "Ez 20%-kal alacsonyabb értéket jelent a trendhez képest."
     ]
+  },
+  {
+    source: "Összes gyakorló / összes gyakorló megoldva.docx",
+    title: "Szisztematikus mintavétel",
+    question: "A szisztematikus mintavétel mindig véletlen mintavételnek számít.",
+    options: ["Igaz", "Hamis"],
+    answer: "Hamis",
+    explanation: [
+      "A szisztematikus mintavétel csak akkor tekinthető véletlen jellegűnek, ha a kezdőpontot véletlenszerűen választjuk ki.",
+      "Önmagában az, hogy minden k-adik elemet választjuk, még nem feltétlenül véletlen mintavétel."
+    ]
+  },
+  {
+    source: "Összes gyakorló / összes gyakorló megoldva.docx",
+    title: "F-próba szórásokra",
+    question: "Egy enyvgyártó cég két termék kötőszilárdságát kívánta összehasonlítani. Mindkét típusból 13-13 elemű véletlen mintát készítettek. Adatok: x̄1 = 38, Σd1² = 1330, x̄2 = 39,5, Σd2² = 588, α = 5%. Vizsgálja meg azt az állítást, hogy az első típus szilárdságának szórása nagyobb!",
+    options: [
+      "Próbafüggvény értéke: 2,26; elfogadási tartomány: 0,36-2,75; döntés: H0-t elfogadjuk, nagyobb.",
+      "Próbafüggvény értéke: 2,26; elfogadási tartomány: 0-2,75; döntés: H0-t elfogadjuk, nem nagyobb.",
+      "Próbafüggvény értéke: 2,26; elfogadási tartomány: 0-3,25; döntés: H0-t elfogadjuk, nagyobb.",
+      "Próbafüggvény értéke: 1,50; elfogadási tartomány: 0,31-3,25; döntés: H0-t elfogadjuk, nem nagyobb."
+    ],
+    answer: "Próbafüggvény értéke: 2,26; elfogadási tartomány: 0-2,75; döntés: H0-t elfogadjuk, nem nagyobb.",
+    explanation: [
+      "A két szórás összehasonlítására F-próbát használunk.",
+      "A próbafüggvény: F = 1330 / 588 = 2,26.",
+      "Mivel ez kisebb, mint a kritikus érték 2,75, nincs elég bizonyíték arra, hogy az első szórás nagyobb lenne."
+    ]
+  },
+  {
+    source: "Összes gyakorló / összes gyakorló megoldva.docx",
+    title: "Relatív hiba jele és értelmezése",
+    question: "A relatív hiba jele Ve, és az a jó, ha értéke jóval 10% alatt van.",
+    options: ["Igaz", "Hamis"],
+    answer: "Igaz",
+    explanation: [
+      "A relatív hiba jele gyakran Ve.",
+      "Minél kisebb az értéke, annál pontosabb a regressziós becslés; a 10% alatti érték jónak tekinthető."
+    ]
+  },
+  {
+    source: "Összes gyakorló / összes gyakorló megoldva.docx",
+    title: "Regressziós függvény tesztelése",
+    question: "A regressziós függvény tesztelése során a próbafüggvény a t₀.",
+    options: ["Igaz", "Hamis"],
+    answer: "Hamis",
+    explanation: [
+      "A regressziós függvény egészének tesztelésénél általában F-próbát használunk.",
+      "A t-próba inkább egy-egy regressziós paraméter vizsgálatánál jelenik meg."
+    ]
+  },
+  {
+    source: "Összes gyakorló / összes gyakorló megoldva.docx",
+    title: "F-eloszlás szabadságfokai kétváltozós esetben",
+    question: "Az F-eloszlás táblázatos értékének keresésénél kétváltozós esetben:",
+    options: [
+      "a számláló szabadságfoka 1, a nevezőjé pedig n - 2.",
+      "a számláló szabadságfoka n - 1, a nevezőjé pedig n - 2.",
+      "a számláló szabadságfoka 1, a nevezőjé pedig n - 1.",
+      "a számláló szabadságfoka n - 2, a nevezőjé pedig n - 1."
+    ],
+    answer: "a számláló szabadságfoka 1, a nevezőjé pedig n - 2.",
+    explanation: [
+      "Egyszerű kétváltozós regressziónál az F-próbában a számláló szabadságfoka 1.",
+      "A hibatag szabadságfoka n - 2."
+    ]
+  },
+  {
+    source: "Összes gyakorló / összes gyakorló megoldva.docx",
+    title: "Relatív hiba jelentése",
+    question: "A relatív hiba kifejezi, hogy a regressziós becslések átlagosan hány százalékkal térnek el az eredményváltozó megfigyelt értékeitől.",
+    options: ["Igaz", "Hamis"],
+    answer: "Igaz",
+    explanation: [
+      "A relatív hiba a becslési hiba nagyságát százalékos formában mutatja.",
+      "Ez alapján megítélhető a regressziós becslés pontossága."
+    ]
+  },
+  {
+    source: "Összes gyakorló / összes gyakorló megoldva.docx",
+    title: "Regressziós paraméterek konfidencia-intervalluma",
+    question: "A regresszió-függvény paramétereinek konfidencia-intervallumát a Student-féle t-eloszlás táblázatos értékének segítségével határozzuk meg, amit n - 1-es szabadságfoknál keresünk.",
+    options: ["Igaz", "Hamis"],
+    answer: "Hamis",
+    explanation: [
+      "Egyszerű lineáris regressziónál két paramétert becslünk, ezért a szabadságfok n - 2.",
+      "Nem n - 1-nél kell keresni a t-értéket."
+    ]
+  },
+  {
+    source: "Összes gyakorló / összes gyakorló megoldva.docx",
+    title: "Lineáris trend b₀ paramétere Σt = 0 esetén",
+    question: "Lineáris trend esetében a b₀ paramétert, ha a Σt = 0 eljárással határoztuk meg, és páros az időpontok/időszakok száma, akkor a vizsgált idősor adatainak számtani átlagaként értelmezzük.",
+    options: ["Igaz", "Hamis"],
+    answer: "Igaz",
+    explanation: [
+      "Ha Σt = 0, akkor a lineáris trend b₀ paramétere az idősor átlagos szintjét adja.",
+      "Ez páros számú időszak esetén is a megfigyelt értékek számtani átlaga."
+    ]
+  },
+  {
+    source: "Összes gyakorló / összes gyakorló megoldva.docx",
+    title: "Exponenciális trend b₁² értelmezése",
+    question: "Exponenciális esetben, ha a Σt = 0 eljárást alkalmaztuk, és páros az időszakok/időpontok száma, akkor b₁² az időegységenkénti átlagos változás mértéke.",
+    options: ["Igaz", "Hamis"],
+    answer: "Igaz",
+    explanation: [
+      "Páros számú időszak esetén a kódolt t értékek általában kettesével változnak.",
+      "Ezért az egy időegységre jutó átlagos változást b₁² fejezi ki."
+    ]
+  },
+  {
+    source: "Összes gyakorló / összes gyakorló megoldva.docx",
+    title: "Σt = 0 eljárás alkalmazhatósága",
+    question: "A Σt = 0 eljárás a paraméterek meghatározására csak abban az esetben alkalmazható, ha az idősor egymást követő azonos hosszúságú időszakokra, vagy egymástól egyenlő távolságra lévő időpontokra vonatkozik.",
+    options: ["Igaz", "Hamis"],
+    answer: "Igaz",
+    explanation: [
+      "A Σt = 0 módszer szabályos időbeli elrendezést feltételez.",
+      "Akkor használható jól, ha az időszakok azonos hosszúak vagy az időpontok egyenlő távolságra vannak egymástól."
+    ]
+  },
+  {
+    source: "Összes gyakorló / összes gyakorló megoldva.docx",
+    title: "Exponenciális trend 2b₁ értelmezése",
+    question: "Exponenciális esetben, ha a Σt = 0 eljárást alkalmaztuk, és páros az időszakok/időpontok száma, akkor 2b₁ az időegységenkénti átlagos változás mértéke.",
+    options: ["Igaz", "Hamis"],
+    answer: "Hamis",
+    explanation: [
+      "Páros számú időszak esetén nem 2b₁, hanem b₁² fejezi ki az időegységenkénti átlagos változás mértékét.",
+      "A 2b₁ nem megfelelő értelmezés."
+    ]
+  },
+  {
+    source: "Összes gyakorló / összes gyakorló megoldva.docx",
+    title: "Lineáris trend b₁ paramétere",
+    question: "Lineáris esetben a b₁ paraméter az időegységenkénti átlagos abszolút változás mértéke, előjelétől függően növekedést vagy csökkenést jelez a vizsgálatba bevont időtartam alatt.",
+    options: ["Igaz", "Hamis"],
+    answer: "Igaz",
+    explanation: [
+      "Lineáris trendnél a b₁ a meredekség.",
+      "Ez mutatja, hogy egy időegység alatt átlagosan mennyivel nő vagy csökken az idősor értéke."
+    ]
+  },
+  {
+    source: "Összes gyakorló / összes gyakorló megoldva.docx",
+    title: "Additív vs. multiplikatív szezonhatás",
+    question: "Additív összefüggés esetén a szezonhatás a trendtől való relatív eltérés, multiplikatív kapcsolat esetén pedig abszolút eltérés formájában jelentkezik.",
+    options: ["Igaz", "Hamis"],
+    answer: "Hamis",
+    explanation: [
+      "Pont fordítva van: additív modellnél a szezonhatás abszolút eltérés, multiplikatív modellnél pedig relatív eltérés vagy szezonindex.",
+      "Additívnál: Y = T + S + V, multiplikatívnál: Y = T · S · V."
+    ]
+  },
+  {
+    source: "Összes gyakorló / összes gyakorló megoldva.docx",
+    title: "2014. IV. negyedévi várható érték",
+    question: "Egy bizonyos autómárka értékesítését figyelték meg 2008-2013 között, negyedévenként. A hosszútávú trendet a ŷ = 21 + 37t függvény írja le, míg a negyedéves szezonális eltérések rendre: -260, 420, 380, -540. Mekkora a 2014. IV. negyedévre várható értékesítés nagysága?",
+    options: ["1597 db", "1057 db", "517 db", "797 db"],
+    answer: "517 db",
+    explanation: [
+      "2008-2013 között 6 év × 4 negyedév = 24 időszak, ezért 2014 IV. negyedéve a t = 28.",
+      "A trendérték: 21 + 37 · 28 = 1057.",
+      "Ehhez az IV. negyedéves szezonális eltérés -540, tehát 1057 - 540 = 517."
+    ]
+  },
+  {
+    source: "Összes gyakorló / összes gyakorló megoldva.docx",
+    title: "Additív kapcsolat idősorban",
+    question: "Ha az idősor adatai a komponensek összegeként adódnak, additív kapcsolatról beszélünk, és ebben az esetben szezonális eltérésekkel mutatjuk ki a szezonhatást.",
+    options: ["Igaz", "Hamis"],
+    answer: "Igaz",
+    explanation: [
+      "Additív modellnél az idősor komponensei összeadódnak.",
+      "Ilyenkor a szezonhatást szezonális eltérésként, vagyis abszolút különbségként értelmezzük."
+    ]
+  },
+  {
+    source: "Összes gyakorló / összes gyakorló megoldva.docx",
+    title: "Balaton-parti étterem III. negyedévi szezonindexe",
+    question: "Egy Balaton-parti étterem forgalmának negyedéves tisztított szezonindexei: sI = 0,5, sII = 0,8, sIII = ..., sIV = 0,7. Válassza ki a helyes értelmezést! A III. negyedévi szezonindex azt jelenti, hogy:",
+    options: [
+      "a III. negyedévben az étterem forgalma megegyezik az átlagossal.",
+      "a III. negyedévi szezonindexet nem ismerjük, így a kérdés nem válaszolható meg.",
+      "a III. negyedévben a szezonhatás miatt az étterem forgalma átlagosan 3,57-szerese a trend szerinti értéknek.",
+      "a III. negyedévben a szezonhatás miatt az étterem forgalma átlagosan kétszerese a trend szerinti értéknek."
+    ],
+    answer: "a III. negyedévben a szezonhatás miatt az étterem forgalma átlagosan kétszerese a trend szerinti értéknek.",
+    explanation: [
+      "Negyedéves szezonindexek összege 4, ezért sIII = 4 - 0,5 - 0,8 - 0,7 = 2.",
+      "A 2 azt jelenti, hogy a III. negyedévben a forgalom átlagosan a trendérték kétszerese."
+    ]
   }
 ];
 
@@ -998,7 +1191,22 @@ const TOPICS_BY_TITLE = {
   "Multiplikatív modell": [TOPICS.trend, TOPICS.sampleExam],
   "Szezonindex jelentése": [TOPICS.trend, TOPICS.sampleExam],
   "Korrigált szezonális eltérés": [TOPICS.trend, TOPICS.sampleExam],
-  "Szezonindex értelmezése": [TOPICS.trend, TOPICS.sampleExam]
+  "Szezonindex értelmezése": [TOPICS.trend, TOPICS.sampleExam],
+  "Szisztematikus mintavétel": [TOPICS.sampling],
+  "Relatív hiba jele és értelmezése": [TOPICS.regression],
+  "Regressziós függvény tesztelése": [TOPICS.regression],
+  "F-eloszlás szabadságfokai kétváltozós esetben": [TOPICS.regression],
+  "Relatív hiba jelentése": [TOPICS.regression],
+  "Regressziós paraméterek konfidencia-intervalluma": [TOPICS.regression],
+  "Lineáris trend b₀ paramétere Σt = 0 esetén": [TOPICS.trend],
+  "Exponenciális trend b₁² értelmezése": [TOPICS.trend],
+  "Σt = 0 eljárás alkalmazhatósága": [TOPICS.trend],
+  "Exponenciális trend 2b₁ értelmezése": [TOPICS.trend],
+  "Lineáris trend b₁ paramétere": [TOPICS.trend],
+  "Additív vs. multiplikatív szezonhatás": [TOPICS.trend],
+  "2014. IV. negyedévi várható érték": [TOPICS.trend],
+  "Additív kapcsolat idősorban": [TOPICS.trend],
+  "Balaton-parti étterem III. negyedévi szezonindexe": [TOPICS.trend]
 };
 
 window.quizTopics = Object.values(TOPICS);
