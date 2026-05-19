@@ -182,9 +182,24 @@ async function getSummary(env, origin, request) {
     ORDER BY events DESC
   `).all();
 
+  const questions = await env.DB.prepare(`
+    SELECT
+      topic,
+      question_title,
+      COUNT(*) AS answers,
+      SUM(CASE WHEN correct = 1 THEN 1 ELSE 0 END) AS correct_answers,
+      COUNT(DISTINCT visitor_hash) AS unique_visitors
+    FROM visit_events
+    WHERE event = 'answer'
+      AND question_title IS NOT NULL
+    GROUP BY topic, question_title
+    ORDER BY answers DESC, correct_answers ASC, question_title ASC
+  `).all();
+
   return json({
     daily: daily.results || [],
-    topics: topics.results || []
+    topics: topics.results || [],
+    questions: questions.results || []
   }, {}, origin, env);
 }
 
@@ -244,10 +259,36 @@ async function dashboardHtml(env, origin, request) {
     table { width: 100%; border-collapse: collapse; min-width: 720px; }
     th, td { padding: 10px 8px; border-bottom: 1px solid var(--line); text-align: left; }
     th { color: var(--muted); font-size: .82rem; text-transform: uppercase; letter-spacing: .04em; }
+    .sort-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: auto;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      border-radius: 0;
+      color: inherit;
+      font: inherit;
+      font-weight: inherit;
+      text-transform: inherit;
+      letter-spacing: inherit;
+      cursor: pointer;
+    }
+    .sort-button:hover { color: var(--ink); }
+    .sort-indicator {
+      display: inline-block;
+      width: 14px;
+      color: #8a97a5;
+      text-align: center;
+    }
     .bar { height: 9px; width: 100%; background: #e7ecf2; border-radius: 999px; overflow: hidden; }
     .bar span { display: block; height: 100%; background: var(--blue); }
     .ok { color: var(--green); font-weight: 800; }
     .bad { color: var(--red); font-weight: 800; }
+    .toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+    select { min-height: 38px; border: 1px solid var(--line); border-radius: 8px; background: #fff; padding: 0 12px; font: inherit; }
+    .question-cell { max-width: 460px; white-space: normal; line-height: 1.35; }
     @media (max-width: 760px) {
       header { display: block; }
       header button { margin-top: 12px; width: 100%; }
@@ -275,7 +316,13 @@ async function dashboardHtml(env, origin, request) {
     <section>
       <h2>Napi statisztika</h2>
       <table>
-        <thead><tr><th>Nap</th><th>Egyedi</th><th>Megnyitás</th><th>Válasz</th><th>Esemény</th></tr></thead>
+        <thead><tr>
+          <th><button class="sort-button" type="button" data-table="daily" data-key="day" data-label="Nap">Nap<span class="sort-indicator"></span></button></th>
+          <th><button class="sort-button" type="button" data-table="daily" data-key="unique_visitors" data-label="Egyedi">Egyedi<span class="sort-indicator"></span></button></th>
+          <th><button class="sort-button" type="button" data-table="daily" data-key="page_views" data-label="Megnyitás">Megnyitás<span class="sort-indicator"></span></button></th>
+          <th><button class="sort-button" type="button" data-table="daily" data-key="answers" data-label="Válasz">Válasz<span class="sort-indicator"></span></button></th>
+          <th><button class="sort-button" type="button" data-table="daily" data-key="events" data-label="Esemény">Esemény<span class="sort-indicator"></span></button></th>
+        </tr></thead>
         <tbody id="daily"></tbody>
       </table>
     </section>
@@ -283,14 +330,68 @@ async function dashboardHtml(env, origin, request) {
     <section>
       <h2>Témakörök</h2>
       <table>
-        <thead><tr><th>Témakör</th><th>Egyedi</th><th>Válasz</th><th>Helyes</th><th>Helyesség</th><th></th></tr></thead>
+        <thead><tr>
+          <th><button class="sort-button" type="button" data-table="topics" data-key="topic" data-label="Témakör">Témakör<span class="sort-indicator"></span></button></th>
+          <th><button class="sort-button" type="button" data-table="topics" data-key="unique_visitors" data-label="Egyedi">Egyedi<span class="sort-indicator"></span></button></th>
+          <th><button class="sort-button" type="button" data-table="topics" data-key="answers" data-label="Válasz">Válasz<span class="sort-indicator"></span></button></th>
+          <th><button class="sort-button" type="button" data-table="topics" data-key="correct_answers" data-label="Helyes">Helyes<span class="sort-indicator"></span></button></th>
+          <th><button class="sort-button" type="button" data-table="topics" data-key="accuracy" data-label="Helyesség">Helyesség<span class="sort-indicator"></span></button></th>
+          <th></th>
+        </tr></thead>
         <tbody id="topics"></tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Legnehezebb kérdések</h2>
+      <table>
+        <thead><tr>
+          <th><button class="sort-button" type="button" data-table="hardest" data-key="question_title" data-label="Kérdés">Kérdés<span class="sort-indicator"></span></button></th>
+          <th><button class="sort-button" type="button" data-table="hardest" data-key="topic" data-label="Témakör">Témakör<span class="sort-indicator"></span></button></th>
+          <th><button class="sort-button" type="button" data-table="hardest" data-key="answers" data-label="Válasz">Válasz<span class="sort-indicator"></span></button></th>
+          <th><button class="sort-button" type="button" data-table="hardest" data-key="correct_answers" data-label="Helyes">Helyes<span class="sort-indicator"></span></button></th>
+          <th><button class="sort-button" type="button" data-table="hardest" data-key="accuracy" data-label="Helyesség">Helyesség<span class="sort-indicator"></span></button></th>
+          <th></th>
+        </tr></thead>
+        <tbody id="hardest"></tbody>
+      </table>
+    </section>
+
+    <section>
+      <div class="toolbar">
+        <h2 style="margin: 0;">Kérdések témakör szerint</h2>
+        <select id="topicFilter" aria-label="Témakör szűrő"></select>
+      </div>
+      <table>
+        <thead><tr>
+          <th><button class="sort-button" type="button" data-table="questions" data-key="question_title" data-label="Kérdés">Kérdés<span class="sort-indicator"></span></button></th>
+          <th><button class="sort-button" type="button" data-table="questions" data-key="topic" data-label="Témakör">Témakör<span class="sort-indicator"></span></button></th>
+          <th><button class="sort-button" type="button" data-table="questions" data-key="unique_visitors" data-label="Egyedi">Egyedi<span class="sort-indicator"></span></button></th>
+          <th><button class="sort-button" type="button" data-table="questions" data-key="answers" data-label="Válasz">Válasz<span class="sort-indicator"></span></button></th>
+          <th><button class="sort-button" type="button" data-table="questions" data-key="correct_answers" data-label="Helyes">Helyes<span class="sort-indicator"></span></button></th>
+          <th><button class="sort-button" type="button" data-table="questions" data-key="accuracy" data-label="Helyesség">Helyesség<span class="sort-indicator"></span></button></th>
+          <th></th>
+        </tr></thead>
+        <tbody id="questions"></tbody>
       </table>
     </section>
   </main>
 
   <script>
     const token = ${JSON.stringify(token)};
+    const dashboardState = {
+      data: {
+        daily: [],
+        topics: [],
+        questions: []
+      },
+      sorts: {
+        daily: { key: "day", dir: "desc" },
+        topics: { key: "answers", dir: "desc" },
+        hardest: { key: "accuracy", dir: "asc" },
+        questions: { key: "answers", dir: "desc" }
+      }
+    };
 
     function pct(part, total) {
       return total ? Math.round((part / total) * 100) : 0;
@@ -300,21 +401,79 @@ async function dashboardHtml(env, origin, request) {
       return Number(value || 0);
     }
 
-    async function load() {
-      const response = await fetch("/summary?token=" + encodeURIComponent(token), { cache: "no-store" });
-      const data = await response.json();
-      const today = data.daily?.[0] || {};
-      const totalCorrect = (data.topics || []).reduce((sum, item) => sum + number(item.correct_answers), 0);
-      const totalAnswers = number(today.answers);
-      const accuracy = pct(totalCorrect, totalAnswers);
+    function withAccuracy(rows) {
+      return rows.map(row => ({
+        ...row,
+        accuracy: pct(number(row.correct_answers), number(row.answers))
+      }));
+    }
 
-      document.getElementById("visitors").textContent = number(today.unique_visitors);
-      document.getElementById("views").textContent = number(today.page_views);
-      document.getElementById("answers").textContent = totalAnswers;
-      document.getElementById("accuracy").textContent = accuracy + "%";
-      document.getElementById("updated").textContent = "Frissítve: " + new Date().toLocaleString("hu-HU");
+    function compareValues(left, right, dir) {
+      if (typeof left === "number" || typeof right === "number") {
+        return dir === "asc" ? left - right : right - left;
+      }
 
-      document.getElementById("daily").innerHTML = (data.daily || []).map(day => \`
+      const a = String(left || "").toLocaleLowerCase("hu-HU");
+      const b = String(right || "").toLocaleLowerCase("hu-HU");
+      if (a === b) return 0;
+      return dir === "asc" ? a.localeCompare(b, "hu-HU") : b.localeCompare(a, "hu-HU");
+    }
+
+    function sortRows(rows, tableName) {
+      const sort = dashboardState.sorts[tableName];
+      return [...rows].sort((a, b) => {
+        const primary = compareValues(a[sort.key], b[sort.key], sort.dir);
+        if (primary !== 0) return primary;
+
+        if (tableName === "daily") {
+          return compareValues(a.day, b.day, "desc");
+        }
+
+        if (tableName === "topics") {
+          return compareValues(a.topic, b.topic, "asc");
+        }
+
+        return compareValues(a.question_title, b.question_title, "asc");
+      });
+    }
+
+    function sortIndicator(tableName, key) {
+      const sort = dashboardState.sorts[tableName];
+      if (sort.key !== key) return " ";
+      return sort.dir === "asc" ? "↑" : "↓";
+    }
+
+    function updateSortButtons() {
+      document.querySelectorAll(".sort-button").forEach(button => {
+        const tableName = button.dataset.table;
+        const key = button.dataset.key;
+        button.firstChild.textContent = button.dataset.label;
+        button.querySelector(".sort-indicator").textContent = sortIndicator(tableName, key);
+      });
+    }
+
+    function renderQuestionRows(rows, targetId) {
+      document.getElementById(targetId).innerHTML = rows.map(question => {
+        const answers = number(question.answers);
+        const correct = number(question.correct_answers);
+        const accuracy = number(question.accuracy);
+        return \`
+          <tr>
+            <td class="question-cell">\${question.question_title || "Nincs kérdéscím"}</td>
+            <td>\${question.topic || "Nincs témakör"}</td>
+            \${targetId === "questions" ? \`<td>\${number(question.unique_visitors)}</td>\` : ""}
+            <td>\${answers}</td>
+            <td>\${correct}</td>
+            <td class="\${accuracy >= 60 ? "ok" : "bad"}">\${accuracy}%</td>
+            <td><div class="bar"><span style="width: \${accuracy}%"></span></div></td>
+          </tr>
+        \`;
+      }).join("");
+    }
+
+    function renderTables() {
+      const dailyRows = sortRows(dashboardState.data.daily, "daily");
+      document.getElementById("daily").innerHTML = dailyRows.map(day => \`
         <tr>
           <td>\${day.day}</td>
           <td>\${number(day.unique_visitors)}</td>
@@ -324,10 +483,11 @@ async function dashboardHtml(env, origin, request) {
         </tr>
       \`).join("");
 
-      document.getElementById("topics").innerHTML = (data.topics || []).map(topic => {
+      const topicRows = sortRows(withAccuracy(dashboardState.data.topics), "topics");
+      document.getElementById("topics").innerHTML = topicRows.map(topic => {
         const answers = number(topic.answers);
         const correct = number(topic.correct_answers);
-        const accuracy = pct(correct, answers);
+        const accuracy = number(topic.accuracy);
         return \`
           <tr>
             <td>\${topic.topic || "Nincs témakör"}</td>
@@ -339,9 +499,62 @@ async function dashboardHtml(env, origin, request) {
           </tr>
         \`;
       }).join("");
+
+      const topicFilter = document.getElementById("topicFilter");
+      const questionRows = withAccuracy(dashboardState.data.questions);
+      const filteredQuestions = topicFilter.value === "Összes"
+        ? questionRows
+        : questionRows.filter(item => item.topic === topicFilter.value);
+
+      const hardest = sortRows(
+        questionRows.filter(item => number(item.answers) > 0),
+        "hardest"
+      ).slice(0, 10);
+      renderQuestionRows(hardest, "hardest");
+      renderQuestionRows(sortRows(filteredQuestions, "questions"), "questions");
+      updateSortButtons();
+    }
+
+    async function load() {
+      const response = await fetch("/summary?token=" + encodeURIComponent(token), { cache: "no-store" });
+      const data = await response.json();
+      dashboardState.data.daily = data.daily || [];
+      dashboardState.data.topics = data.topics || [];
+      dashboardState.data.questions = data.questions || [];
+
+      const today = dashboardState.data.daily[0] || {};
+      const totalCorrect = dashboardState.data.topics.reduce((sum, item) => sum + number(item.correct_answers), 0);
+      const totalAnswers = number(today.answers);
+      const accuracy = pct(totalCorrect, totalAnswers);
+
+      document.getElementById("visitors").textContent = number(today.unique_visitors);
+      document.getElementById("views").textContent = number(today.page_views);
+      document.getElementById("answers").textContent = totalAnswers;
+      document.getElementById("accuracy").textContent = accuracy + "%";
+      document.getElementById("updated").textContent = "Frissítve: " + new Date().toLocaleString("hu-HU");
+
+      const topicFilter = document.getElementById("topicFilter");
+      const previousFilter = topicFilter.value || "Összes";
+      const topicNames = ["Összes", ...new Set(dashboardState.data.questions.map(item => item.topic).filter(Boolean))];
+      topicFilter.innerHTML = topicNames.map(topic => \`<option value="\${topic}">\${topic}</option>\`).join("");
+      topicFilter.value = topicNames.includes(previousFilter) ? previousFilter : "Összes";
+      renderTables();
     }
 
     document.getElementById("refresh").addEventListener("click", load);
+    document.getElementById("topicFilter").addEventListener("change", renderTables);
+    document.querySelectorAll(".sort-button").forEach(button => {
+      button.addEventListener("click", () => {
+        const tableName = button.dataset.table;
+        const key = button.dataset.key;
+        const current = dashboardState.sorts[tableName];
+        dashboardState.sorts[tableName] = {
+          key,
+          dir: current.key === key && current.dir === "asc" ? "desc" : "asc"
+        };
+        renderTables();
+      });
+    });
     load();
   </script>
 </body>
