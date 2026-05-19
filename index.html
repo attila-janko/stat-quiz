@@ -719,17 +719,21 @@
       return item.topic || "Egyéb";
     }
 
+    function getQuestionTopics(item) {
+      return Array.isArray(item.topics) && item.topics.length ? item.topics : [getQuestionTopic(item)];
+    }
+
     function getVisibleIndexes() {
       return quiz
         .map((item, index) => ({ item, index }))
-        .filter(({ item }) => state.topic === ALL_TOPICS || getQuestionTopic(item) === state.topic)
+        .filter(({ item }) => state.topic === ALL_TOPICS || getQuestionTopics(item).includes(state.topic))
         .map(({ index }) => index);
     }
 
     function getTopicStats(topic) {
       const indexes = quiz
         .map((item, index) => ({ item, index }))
-        .filter(({ item }) => topic === ALL_TOPICS || getQuestionTopic(item) === topic)
+        .filter(({ item }) => topic === ALL_TOPICS || getQuestionTopics(item).includes(topic))
         .map(({ index }) => index);
       const answered = indexes.filter(index => state.answers[index] && state.answers[index].correct !== null).length;
       const correct = indexes.filter(index => state.answers[index]?.correct).length;
@@ -793,7 +797,7 @@
       const visiblePosition = getVisiblePosition();
       const visibleTotal = getVisibleIndexes().length;
 
-      els.questionNumber.textContent = `${visiblePosition + 1}. kérdés / ${visibleTotal} · ${getQuestionTopic(item)} · ${item.source || "Kérdésbank"}${item.title ? ` · ${item.title}` : ""}`;
+      els.questionNumber.textContent = `${visiblePosition + 1}. kérdés / ${visibleTotal} · ${getQuestionTopics(item).join(" · ")} · ${item.source || "Kérdésbank"}${item.title ? ` · ${item.title}` : ""}`;
       els.questionText.textContent = item.question;
       els.options.innerHTML = "";
 

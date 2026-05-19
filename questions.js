@@ -2,7 +2,10 @@ const TOPICS = {
   sampling: "Mintavétel és standard hiba",
   tests: "Hipotézisvizsgálat és próbák",
   variance: "Varianciaanalízis és illeszkedés",
-  relationship: "Kapcsolatvizsgálat és korreláció"
+  relationship: "Kapcsolatvizsgálat és korreláció",
+  regression: "Regresszió",
+  trend: "Trend és idősor",
+  sampleExam: "minta ZH"
 };
 
 window.quizQuestions = [
@@ -367,12 +370,12 @@ window.quizQuestions = [
       "A mintában a „sérült” őszibarackok részaránya 6% felett van, ezért a gyár a szállítmányt nem veszi át.",
       "A szállítmányban a „sérült” barackok részaránya 6% felett van, de a gyár azt mégis átveszi."
     ],
-    answer: "A mintában a „sérült” őszibarackok részaránya 6% alatt van, ezért a gyár a szállítmányt átveszi.",
+    answer: "A szállítmányban a „sérült” barackok részaránya 6% felett van, de a gyár azt mégis átveszi.",
     explanation: [
       "A másodfajú hiba azt jelenti, hogy a valóságban a nullhipotézis hamis, de mi ezt nem utasítjuk el (elfogadjuk).",
       "Itt a gyár érdeke alapján: H0: a sérült barackok aránya nem haladja meg a 6%-ot; H1: a sérült barackok aránya meghaladja a 6%-ot.",
       "Másodfajú hiba akkor van, ha a valóságban rossz a szállítmány, vagyis 6% felett van a sérültek aránya, de a gyár mégis úgy dönt, hogy rendben van, és átveszi.",
-      "Az 1. szól arról, hogy a mintában 6% alatt van, ezért a döntés szerint elfogadja a szállítmányt, de ez nem feltétlenül jelenti a valóságban is, hogy a szállítmány rendben van."
+      "Ez a 4. válasz: a szállítmány valójában rossz, de a gyár a mintavételi döntés alapján mégis átveszi."
     ]
   },
   {
@@ -429,11 +432,11 @@ window.quizQuestions = [
     source: "I. ZH / igazhamis.docx",
     title: "Mintavételi hiba állításai",
     question: "Igazak-e vagy hamisak az alábbi állítások egyszerű mintavétel esetén? 1. A mintavételi hiba a sokasági szórás növekedésével nő. 2. A mintavételi hiba a mintanagyság növekedésével nő. 3. A mintavételi hiba a sokasági elemszám növekedésével nő. 4. A mintavételi hiba független a minta elemszámától.",
-    answer: "1. Igaz. 2. Hamis. 3. Igaz. 4. Hamis.",
+    answer: "1. Igaz. 2. Hamis. 3. Hamis. 4. Hamis.",
     explanation: [
       "1. Igaz: a standard hiba képletében a sokaság vagy annak becsült szórása szerepel. Minél nagyobb a szórás, annál nagyobb az adatok ingadozása, ezért annál nagyobb a mintavételi bizonytalanság is.",
       "2. Hamis: nagyobb minta esetén a becslés pontosabb lesz. A standard hiba tipikusan 1 / √n szerint csökken, tehát ha nő a mintanagyság, a mintavételi hiba csökken.",
-      "3. Igaz: a korrekciós tényező miatt a mintavételi hiba növekszik, ha a sokaság elemszáma (N) nő. (képlet)",
+      "3. Hamis: a feladat logikája szerint a sokasági elemszám önmagában nem közvetlen növelő tényező.",
       "4. Hamis: a mintavételi hiba nem független a minta elemszámától, hanem erősen függ tőle. Nagyobb mintából általában kisebb hibával becslünk."
     ]
   },
@@ -454,13 +457,13 @@ window.quizQuestions = [
     source: "I. ZH / igazhamis.docx",
     title: "Standard hiba számítása",
     question: "Egy 400 elemű egyszerű véletlen minta alapján megbecsülték az adott napon előállított 3 000 db táblás csokoládé átlagos nettó tömegét. A minta alapján a tömegek átlaga 98,5 g-nak, szórása 4 grammnak adódott. Adja meg a standard hibát grammban!",
-    answer: "kb. 0,186 gramm",
+    answer: "0,2 gramm",
     explanation: [
-      "Adatok: n = 400, s = 4, N = 3000.",
-      "A standard hiba: SE = (s / √n)*√(1- n/N).",
-      "Behelyettesítve: SE = (4 / √400)*√(1- 400/3000) = (4 / 20)*√(1- 0,133) = 0,2*√0,867 ≈ 0,2*0,931 ≈ 0,186.",
+      "Adatok: n = 400, s = 4.",
+      "A standard hiba képlete ebben a feladatban: s / √n.",
+      "Behelyettesítve: 4 / √400 = 4 / 20 = 0,2.",
       "A standard hiba azt mutatja meg, hogy a mintaátlag milyen mértékben ingadozna mintáról mintára.",
-      "Itt a szórás 4, a mintanagyság 400, ezért a standard hiba körülbelül 0,186 gramm."
+      "Itt a szórás 4, a mintanagyság 400, ezért a standard hiba 0,2 gramm."
     ]
   },
   {
@@ -625,61 +628,382 @@ window.quizQuestions = [
       "Kisebb α szigorúbb döntési szabályt jelent.",
       "A kritikus tartomány kisebb lesz, ezért csak szélsőségesebb próbaérték esetén utasítjuk el H0-t."
     ]
+  },
+  {
+    source: "minta ZH / mintazh megoldott.docx",
+    title: "Szóráshányados értelmezése",
+    question: "Egy cégnél vizsgálták, hogy van-e kapcsolat az értékesítők neme és az általuk eladott termékek éves száma között. A szóráshányados értéke 0,12. Adja meg, hogy a nem hány százalékban magyarázza az eladott termékszám szóródását, és adja meg a kapcsolat szorosságát.",
+    answer: "kb. 1,5-1,6%, gyenge kapcsolat",
+    explanation: [
+      "A magyarázóerőt a szóráshányados négyzete adja százalékban: H² × 100.",
+      "0,12² × 100 = 1,44%, ami nagyon alacsony magyarázóerő.",
+      "Ezért a kapcsolat szorossága: 1, gyenge."
+    ]
+  },
+  {
+    source: "minta ZH / mintazh megoldott.docx",
+    title: "Lineáris regresszió lakásáraknál",
+    question: "Egy nagyvárosban a lakásméret nagysága, mint független változó X, és a vételára, mint függő változó Y között vizsgálták a kapcsolatot. A lineáris kapcsolat szorosságának mérőszáma 0,897. A regressziófüggvény: Ŷ = 0,217 + 0,993x. a) Milyen szoros a kapcsolat? b) Egy m²-rel nagyobb lakás ára átlagosan mennyivel változik? c) Adjon becslést egy 117 m²-es lakás árára!",
+    answer: "a) szoros; b) 0,993 M Ft; c) 116,398 M Ft",
+    explanation: [
+      "A 0,897-es korreláció erős, pozitív lineáris kapcsolatot jelez.",
+      "A meredekség 0,993, tehát egy plusz m² átlagosan 0,993 millió Ft-tal növeli az árat.",
+      "A becslés: 0,217 + 0,993 × 117 = 116,398."
+    ]
+  },
+  {
+    source: "minta ZH / mintazh megoldott.docx",
+    title: "Lineáris trend tengelymetszete",
+    question: "2010 januárja és 2022 decembere között egy vállalat havi eladásait vizsgálva az alábbi lineáris trendet azonosították: Yt = 1000 + 50t, ahol t = 1 a hónapok száma, Yt az eladott termékmennyiség. Mit mutat az 1000?",
+    options: [
+      "2009 decemberében 1000 darab terméket értékesítettek",
+      "2010 januárjában 1000 darab terméket értékesítettek",
+      "0 termék értékesítése mellett 1000 dollár az árbevétel",
+      "havonta átlagosan 1000 darabbal nőtt az értékesítés"
+    ],
+    answer: "2009 decemberében 1000 darab terméket értékesítettek",
+    explanation: [
+      "Mivel t = 1 2010 januárja, ezért t = 0 az azt megelőző időpont, vagyis 2009 decembere.",
+      "Az 1000 a trendfüggvény tengelymetszete."
+    ]
+  },
+  {
+    source: "minta ZH / mintazh megoldott.docx",
+    title: "Lineáris trend meredeksége",
+    question: "2010 januárja és 2022 decembere között egy vállalat havi eladásait vizsgálva az alábbi lineáris trendet azonosították: Yt = 1000 + 50t. Mit mutat az 50?",
+    options: [
+      "szoros a kapcsolat az eltelt időszak és az eladások között",
+      "gyenge a kapcsolat az eltelt időszak és az eladások között",
+      "az eltelt időszakban havonta átlagosan 50 darabbal nőtt az eladás",
+      "az eltelt időszakban havonta átlagosan 50 darabbal csökkent az eladás"
+    ],
+    answer: "az eltelt időszakban havonta átlagosan 50 darabbal nőtt az eladás",
+    explanation: [
+      "Az 50 a trend meredeksége.",
+      "Pozitív előjelű, ezért havi átlagos növekedést jelent."
+    ]
+  },
+  {
+    source: "minta ZH / mintazh megoldott.docx",
+    title: "Cramer-mutató és elméleti gyakoriság",
+    question: "Egy holland cégnél vizsgálták, hogy van-e kapcsolat a dolgozók neme és a munkába járás módja között. A közlekedési eszközök sorösszegei: személygépkocsi 80, tömegközlekedés 130, kerékpár 140; a nemek oszlopösszegei: férfi 205, nő 145; összesen 350. A Cramer-mutató értéke 0,15. Adja meg n22* értékét, a kapcsolat szorosságát, és a Cramer-mutató értékét két független ismérv esetén.",
+    answer: "n22* = 53,86; gyenge kapcsolat; függetlenség esetén 0",
+    explanation: [
+      "Az elméleti gyakoriság képlete: sorösszeg × oszlopösszeg / főösszeg.",
+      "n22* = 130 × 145 / 350 = 53,86.",
+      "A 0,15-ös Cramer-mutató gyenge kapcsolatot jelez, független ismérvek esetén pedig a Cramer-mutató értéke 0."
+    ]
+  },
+  {
+    source: "minta ZH / mintazh megoldott.docx",
+    title: "Két mennyiségi ismérv kapcsolata",
+    question: "Nevezze meg két mennyiségi ismérv kapcsolatát!",
+    options: ["asszociáció", "vegyes kapcsolat", "korreláció", "függetlenség"],
+    answer: "korreláció",
+    explanation: [
+      "Két mennyiségi ismérv kapcsolatát korrelációval vizsgáljuk.",
+      "Asszociáció két minőségi ismérv kapcsolatánál, vegyes kapcsolat pedig egy minőségi és egy mennyiségi ismérvnél van."
+    ]
+  },
+  {
+    source: "minta ZH / mintazh megoldott.docx",
+    title: "Determinációs együttható és korreláció",
+    question: "A hallgató tanulmányi átlaga 81%-ban magyarázza a tanulmányi ösztöndíj nagyságának szóródását. Ekkor az r értéke ...",
+    options: ["0,9", "-0,9", "0", "1"],
+    answer: "0,9",
+    explanation: [
+      "A 81% az R² = 0,81 értéket jelenti.",
+      "Ennek négyzetgyöke r = 0,9, és itt pozitív kapcsolatot feltételezünk."
+    ]
+  },
+  {
+    source: "minta ZH / mintazh megoldott.docx",
+    title: "Mozgóátlagolás célja",
+    question: "Egészítse ki az alábbi mondatot: A mozgóátlagolás célja ...",
+    options: [
+      "az előrejelzés",
+      "a periodikus és véletlen hatás kiküszöbölése, tompítása",
+      "a fejlődés átlagos ütemének a meghatározása",
+      "az analitikus trendszámítás"
+    ],
+    answer: "a periodikus és véletlen hatás kiküszöbölése, tompítása",
+    explanation: [
+      "A mozgóátlag simítja az idősor ingadozásait.",
+      "Így jobban láthatóvá válik az alapirányzat, vagyis a trend."
+    ]
+  },
+  {
+    source: "minta ZH / mintazh megoldott.docx",
+    title: "Szóráshányados jelentése",
+    question: "A H szóráshányados mérőszámra vonatkozóan melyik megállapítás igaz?",
+    options: [
+      "Az asszociációs kapcsolat szorosságának mérőszáma.",
+      "A vegyes kapcsolat szorosságát és irányát mutatja.",
+      "A vegyes kapcsolat szorosságát méri.",
+      "A minőségi ismérvnek a mennyiségi ismérvre gyakorolt hatását fejezi ki, és százalékosan értelmezhető."
+    ],
+    answer: "A vegyes kapcsolat szorosságát méri.",
+    explanation: [
+      "A szóráshányados egy minőségi és egy mennyiségi ismérv, vagyis vegyes kapcsolat szorosságát méri.",
+      "Irányt nem mutat, és a százalékos magyarázóerőt nem maga H, hanem H² × 100 adja."
+    ]
+  },
+  {
+    source: "minta ZH / mintazh megoldott.docx",
+    title: "Két mennyiségi ismérv ábrája",
+    question: "Két mennyiségi ismérv ábrája:",
+    options: ["a vonaldiagram.", "a pontdiagram.", "a hisztogram.", "a gyakorisági poligon."],
+    answer: "a pontdiagram.",
+    explanation: [
+      "Két mennyiségi ismérv kapcsolatát pontdiagrammal, vagyis szórásdiagrammal ábrázoljuk.",
+      "Az egyik változó az X tengelyre, a másik az Y tengelyre kerül."
+    ]
+  },
+  {
+    source: "minta ZH / mintazh megoldott.docx",
+    title: "A lineáris regresszió b₁ paramétere",
+    question: "A lineáris regresszió-függvény b₁ paramétere azt mutatja meg:",
+    options: [
+      "ha a magyarázóváltozó egy egységgel nő, átlagosan hogyan változik az eredményváltozó értéke.",
+      "ha a magyarázóváltozó egy egységgel nő, átlagosan hányszorosára változik az eredményváltozó értéke.",
+      "ha a magyarázóváltozó egy százalékkal nő, átlagosan hogyan változik az eredményváltozó értéke.",
+      "ha a magyarázóváltozó változatlan, átlagosan hogyan változik az eredményváltozó értéke."
+    ],
+    answer: "ha a magyarázóváltozó egy egységgel nő, átlagosan hogyan változik az eredményváltozó értéke.",
+    explanation: [
+      "Lineáris regresszióban a b₁ a meredekség.",
+      "Azt mutatja, hogy X egy egységnyi növekedése átlagosan mekkora változást okoz Y-ban."
+    ]
+  },
+  {
+    source: "minta ZH / mintazh megoldott.docx",
+    title: "Rugalmassági együttható",
+    question: "A rugalmassági együtthatóra vonatkozóan mely állítás nem igaz?",
+    options: [
+      "Csak pozitív szám lehet.",
+      "A kiszámított eredmény százalék.",
+      "Azt mutatja meg, hogy a magyarázó változó 1%-os növekedésére átlagosan hány százalékkal változik az eredményváltozó.",
+      "Ha abszolút értéke 1-nél nagyobb, ez azt jelenti, hogy a magyarázó változó változására az eredményváltozó rugalmasan reagál."
+    ],
+    answer: "Csak pozitív szám lehet.",
+    explanation: [
+      "A rugalmassági együttható lehet negatív is, ha a két változó ellentétes irányban mozog.",
+      "Például áremelkedés hatására a kereslet csökkenhet."
+    ]
+  },
+  {
+    source: "minta ZH / mintazh megoldott.docx",
+    title: "Hibás állítás a lineáris regresszió b₁ paraméteréről",
+    question: "Jelölje a hibás választ! A lineáris regresszió-függvény b₁ paramétere:",
+    options: [
+      "az egyenes meredekségét határozza meg.",
+      "iránytangens.",
+      "regressziós együttható.",
+      "az x = 0 helyen mutatja a függvény értékét."
+    ],
+    answer: "az x = 0 helyen mutatja a függvény értékét.",
+    explanation: [
+      "Az x = 0 helyen felvett értéket a b₀ paraméter mutatja.",
+      "A b₁ a meredekség, vagyis az iránytangens."
+    ]
+  },
+  {
+    source: "minta ZH / mintazh megoldott.docx",
+    title: "SSE szabadságfoka",
+    question: "A hibatényező / SSE szabadságfoka kétváltozós esetben:",
+    options: ["n", "n - 1", "n - 2", "1"],
+    answer: "n - 2",
+    explanation: [
+      "Egyszerű lineáris regresszióban két paramétert becslünk: b₀-t és b₁-et.",
+      "Emiatt a hibatag szabadságfoka n - 2."
+    ]
+  },
+  {
+    source: "minta ZH / mintazh megoldott.docx",
+    title: "Hatványkitevős függvény b₁ paramétere",
+    question: "Jelölje a helyes állítást! Melyik típusú függvény b₁ paramétere értelmezhető elaszticitási mutatóként?",
+    options: ["az exponenciális.", "a lineáris.", "a hatványkitevős.", "a parabolikus."],
+    answer: "a hatványkitevős.",
+    explanation: [
+      "A hatványkitevős függvény alakja például y = a · x^b.",
+      "Ebben a b paraméter közvetlenül rugalmassági együtthatóként értelmezhető."
+    ]
+  },
+  {
+    source: "minta ZH / mintazh megoldott.docx",
+    title: "Exponenciális trend b₁ paramétere",
+    question: "Egy termék termelésének alakulását 2001-2013 között az alábbi trendfüggvény írja le: ŷ = 540 · 1,065^t, ahol t = 1, 2, ..., n. Értelmezze a trendfüggvény b₁ paraméterét!",
+    options: [
+      "A termelés évente átlagosan 1,065%-kal emelkedett.",
+      "A termelés évente átlagosan 106,5%-kal emelkedett.",
+      "A termelés évente átlagosan 6,5%-kal emelkedett.",
+      "A termelés évente átlagosan 0,65%-kal emelkedett."
+    ],
+    answer: "A termelés évente átlagosan 6,5%-kal emelkedett.",
+    explanation: [
+      "Az 1,065 azt jelenti, hogy az éves átlagos szorzótényező 1,065.",
+      "Ez százalékban 1,065 - 1 = 0,065, vagyis 6,5%-os növekedés."
+    ]
+  },
+  {
+    source: "minta ZH / mintazh megoldott.docx",
+    title: "Négytagú mozgóátlag",
+    question: "Egy hosszabb idősor utolsó néhány eleme: 100, 110, 112, 118, 120, 121, 124, 125. Állapítsa meg a két utolsó négytagú mozgóátlag értékét, és válassza ki a helyes eredményt!",
+    options: ["121,7 és 123,0.", "120,8 és 122,5.", "119,3 és 121,6.", "119,3 és 116,8."],
+    answer: "119,3 és 121,6.",
+    explanation: [
+      "Páros tagszámú, vagyis négytagú mozgóátlagnál centrírozni kell.",
+      "A két utolsó centrírozott mozgóátlag ezért nem egyszerűen az utolsó két négyes átlaga, hanem azok középértékeiből jön ki."
+    ]
+  },
+  {
+    source: "minta ZH / mintazh megoldott.docx",
+    title: "Nyers szezonális eltérés",
+    question: "Az okostelefonok értékesítését figyelték meg egy boltban 4 éven keresztül, negyedévenként. A 4 tagú mozgóátlagolással kapott trendértékek levonása után az I. negyedévre vonatkozó eltérések összege -12 000 db. Mennyi az I. negyedévre vonatkozó nyers szezonális eltérés?",
+    options: ["3 000 db", "4 000 db", "4 500 db", "3 600 db"],
+    answer: "4 000 db",
+    explanation: [
+      "A centrírozott négytagú mozgóátlag miatt az I. negyedévre itt 3 eltérés használható.",
+      "-12 000 / 3 = -4 000, tehát az eltérés nagysága 4 000 db."
+    ]
+  },
+  {
+    source: "minta ZH / mintazh megoldott.docx",
+    title: "Multiplikatív modell",
+    question: "Idősor-elemzés esetén akkor van szó multiplikatív modellről, ha:",
+    options: [
+      "az alapvető tendencia csak exponenciális trenddel közelíthető és szezonindex számítható.",
+      "az alapvető tendencia csak mozgóátlagolású trenddel közelíthető és szezonindex számítható.",
+      "az idősor komponensei szorzatszerűen kapcsolódnak egymáshoz.",
+      "az idősor komponensei összegszerűen kapcsolódnak egymáshoz."
+    ],
+    answer: "az idősor komponensei szorzatszerűen kapcsolódnak egymáshoz.",
+    explanation: [
+      "Multiplikatív modellnél az idősor komponensei szorzással kapcsolódnak össze.",
+      "Például: trend × szezonhatás × véletlen hatás."
+    ]
+  },
+  {
+    source: "minta ZH / mintazh megoldott.docx",
+    title: "Szezonindex jelentése",
+    question: "Válassza ki a helyes választ! A szezonindex azt fejezi ki, hogy:",
+    options: [
+      "a szezonális kilengések mértéke az egyes időszakokban mekkora.",
+      "a j-edik szezonban a megfigyelt idősor átlagosan mennyivel tér el a trendértéktől.",
+      "a j-edik szezonban a szezonhatás értéke átlagosan hányszorosa a trendértéknek.",
+      "a j-edik szezonban a megfigyelt idősor átlagosan hányszorosa a trendértéknek."
+    ],
+    answer: "a j-edik szezonban a megfigyelt idősor átlagosan hányszorosa a trendértéknek.",
+    explanation: [
+      "A szezonindex multiplikatív mutató.",
+      "Azt mutatja, hogy az adott szezonban a tényleges érték átlagosan hányszorosa a trend szerinti értéknek."
+    ]
+  },
+  {
+    source: "minta ZH / mintazh megoldott.docx",
+    title: "Korrigált szezonális eltérés",
+    question: "A Budapesti Nagycirkusz jegybevételének 2008 és 2013 közötti alakulása alapján becsülték a szezonalitás alábbi mutatószámait. Nyers szezonális eltérések: sI = -12, sII = 2,3, sIII = 18,3, sIV = -10. Válassza ki a korrigált szezonális eltérést a IV. negyedévre!",
+    options: ["1,4", "-1,4", "-9,65", "-10,35"],
+    answer: "-9,65",
+    explanation: [
+      "Additív modellben a korrigált szezonális eltérések összege 0 kell legyen.",
+      "A nyers eltérések összege -1,4, ennek negyedrésze -0,35.",
+      "A IV. negyedévre: -10 - (-0,35) = -9,65."
+    ]
+  },
+  {
+    source: "minta ZH / mintazh megoldott.docx",
+    title: "Szezonindex értelmezése",
+    question: "Egy termék forgalmának alakulását negyedévenként 2007 és 2013 között vizsgálva az I. negyedévi szezonindex 0,8. Válassza ki a helyes értelmezést!",
+    options: [
+      "A termék forgalma a szezonális és a véletlen hatás következtében az első negyedévben átlagosan 80 százaléka a trend szerinti értéknek.",
+      "A termék forgalma az első negyedévben az átlagosnak 80 százaléka.",
+      "Az első negyedévben a termék forgalma átlagosan 80%-kal tér el a trend szerinti értéktől.",
+      "Az első negyedévben a termék forgalma átlagosan 20%-kal kisebb, mint a trend szerinti érték."
+    ],
+    answer: "Az első negyedévben a termék forgalma átlagosan 20%-kal kisebb, mint a trend szerinti érték.",
+    explanation: [
+      "A 0,8-as szezonindex azt jelenti, hogy az adott negyedév értéke a trendérték 80%-a.",
+      "Ez 20%-kal alacsonyabb értéket jelent a trendhez képest."
+    ]
   }
 ];
 
-const TOPIC_BY_TITLE = {
-  "Mintavételi függetlenség": TOPICS.sampling,
-  "Azonos eloszlású minta": TOPICS.sampling,
-  "Rétegzett mintavétel": TOPICS.sampling,
-  "Ismert szórás": TOPICS.tests,
-  "Szórás becslése": TOPICS.tests,
-  "Ismeretlen szórás": TOPICS.tests,
-  "Rétegzés és standard hiba": TOPICS.sampling,
-  "Nem arányos rétegzés": TOPICS.sampling,
-  "Rétegzett mintavétel pontossága": TOPICS.sampling,
-  "Egymintás t-próba": TOPICS.tests,
-  "Másodfajú hiba": TOPICS.tests,
-  "Nullhipotézis alakja": TOPICS.tests,
-  "Kétmintás t-próba": TOPICS.tests,
-  "F-próba szórásokra": TOPICS.tests,
-  "Két szórás tesztelése": TOPICS.tests,
-  "ANOVA": TOPICS.variance,
-  "Függetlenségvizsgálat célja": TOPICS.relationship,
-  "Illeszkedésvizsgálat": TOPICS.variance,
-  "Függetlenségvizsgálat hipotézisei": TOPICS.relationship,
-  "Cramer-féle asszociációs együttható": TOPICS.relationship,
-  "Független kapcsolat": TOPICS.relationship,
-  "Korrelációs hányados nulla értéke": TOPICS.relationship,
-  "Eltérés-négyzetösszegek": TOPICS.variance,
-  "H-mutató": TOPICS.relationship,
-  "Rangkorreláció ordinális skálán": TOPICS.relationship,
-  "Lineáris korreláció": TOPICS.relationship,
-  "Rangkorreláció arányskálán": TOPICS.relationship,
-  "Korrelációs együttható értékkészlete": TOPICS.relationship,
-  "Standard hiba számítása": TOPICS.sampling,
-  "Egymintás átlagvizsgálat próbaértéke": TOPICS.tests,
-  "Nem i.i.d. minta": TOPICS.sampling,
-  "Hipotézisvizsgálat döntése": TOPICS.tests,
-  "Csoportos mintavétel hatásossága": TOPICS.sampling,
-  "Csoportos mintavétel oka": TOPICS.sampling,
-  "Mintavételi hiba állításai": TOPICS.sampling,
-  "Véletlen mintavétel": TOPICS.sampling,
-  "Másodfajú hiba értelmezése": TOPICS.tests,
-  "Intervallumbecslés z-eloszlással": TOPICS.sampling,
-  "Konfidenciaintervallum értelmezése": TOPICS.sampling,
-  "Mintanagyság és intervallumszélesség": TOPICS.sampling,
-  "Szórás intervallumbecslése": TOPICS.sampling,
-  "Konfidenciaszint és intervallumszélesség": TOPICS.sampling,
-  "Nullhipotézis elutasítása": TOPICS.tests,
-  "Elsőfajú hiba": TOPICS.tests,
-  "Próbafüggvény előjele": TOPICS.tests,
-  "Kétoldali próba felismerése": TOPICS.tests,
-  "Szignifikanciaszint csökkentése": TOPICS.tests
+const TOPICS_BY_TITLE = {
+  "Mintavételi függetlenség": [TOPICS.sampling],
+  "Azonos eloszlású minta": [TOPICS.sampling],
+  "Rétegzett mintavétel": [TOPICS.sampling],
+  "Ismert szórás": [TOPICS.tests],
+  "Szórás becslése": [TOPICS.tests],
+  "Ismeretlen szórás": [TOPICS.tests],
+  "Rétegzés és standard hiba": [TOPICS.sampling],
+  "Nem arányos rétegzés": [TOPICS.sampling],
+  "Rétegzett mintavétel pontossága": [TOPICS.sampling],
+  "Egymintás t-próba": [TOPICS.tests],
+  "Másodfajú hiba": [TOPICS.tests],
+  "Nullhipotézis alakja": [TOPICS.tests],
+  "Kétmintás t-próba": [TOPICS.tests],
+  "F-próba szórásokra": [TOPICS.tests],
+  "Két szórás tesztelése": [TOPICS.tests],
+  "ANOVA": [TOPICS.variance],
+  "Függetlenségvizsgálat célja": [TOPICS.relationship],
+  "Illeszkedésvizsgálat": [TOPICS.variance],
+  "Függetlenségvizsgálat hipotézisei": [TOPICS.relationship],
+  "Cramer-féle asszociációs együttható": [TOPICS.relationship, TOPICS.sampleExam],
+  "Független kapcsolat": [TOPICS.relationship],
+  "Korrelációs hányados nulla értéke": [TOPICS.relationship],
+  "Eltérés-négyzetösszegek": [TOPICS.variance],
+  "H-mutató": [TOPICS.relationship],
+  "Rangkorreláció ordinális skálán": [TOPICS.relationship],
+  "Lineáris korreláció": [TOPICS.relationship],
+  "Rangkorreláció arányskálán": [TOPICS.relationship],
+  "Korrelációs együttható értékkészlete": [TOPICS.relationship],
+  "Standard hiba számítása": [TOPICS.sampling, TOPICS.sampleExam],
+  "Egymintás átlagvizsgálat próbaértéke": [TOPICS.tests, TOPICS.sampleExam],
+  "Nem i.i.d. minta": [TOPICS.sampling, TOPICS.sampleExam],
+  "Hipotézisvizsgálat döntése": [TOPICS.tests, TOPICS.sampleExam],
+  "Csoportos mintavétel hatásossága": [TOPICS.sampling, TOPICS.sampleExam],
+  "Csoportos mintavétel oka": [TOPICS.sampling, TOPICS.sampleExam],
+  "Mintavételi hiba állításai": [TOPICS.sampling, TOPICS.sampleExam],
+  "Véletlen mintavétel": [TOPICS.sampling, TOPICS.sampleExam],
+  "Másodfajú hiba értelmezése": [TOPICS.tests, TOPICS.sampleExam],
+  "Intervallumbecslés z-eloszlással": [TOPICS.sampling],
+  "Konfidenciaintervallum értelmezése": [TOPICS.sampling],
+  "Mintanagyság és intervallumszélesség": [TOPICS.sampling],
+  "Szórás intervallumbecslése": [TOPICS.sampling],
+  "Konfidenciaszint és intervallumszélesség": [TOPICS.sampling],
+  "Nullhipotézis elutasítása": [TOPICS.tests],
+  "Elsőfajú hiba": [TOPICS.tests],
+  "Próbafüggvény előjele": [TOPICS.tests],
+  "Kétoldali próba felismerése": [TOPICS.tests],
+  "Szignifikanciaszint csökkentése": [TOPICS.tests],
+  "Szóráshányados értelmezése": [TOPICS.relationship, TOPICS.sampleExam],
+  "Lineáris regresszió lakásáraknál": [TOPICS.regression, TOPICS.sampleExam],
+  "Lineáris trend tengelymetszete": [TOPICS.trend, TOPICS.sampleExam],
+  "Lineáris trend meredeksége": [TOPICS.trend, TOPICS.sampleExam],
+  "Cramer-mutató és elméleti gyakoriság": [TOPICS.relationship, TOPICS.sampleExam],
+  "Két mennyiségi ismérv kapcsolata": [TOPICS.relationship, TOPICS.sampleExam],
+  "Determinációs együttható és korreláció": [TOPICS.relationship, TOPICS.sampleExam],
+  "Mozgóátlagolás célja": [TOPICS.trend, TOPICS.sampleExam],
+  "Szóráshányados jelentése": [TOPICS.relationship, TOPICS.sampleExam],
+  "Két mennyiségi ismérv ábrája": [TOPICS.relationship, TOPICS.sampleExam],
+  "A lineáris regresszió b₁ paramétere": [TOPICS.regression, TOPICS.sampleExam],
+  "Rugalmassági együttható": [TOPICS.regression, TOPICS.sampleExam],
+  "Hibás állítás a lineáris regresszió b₁ paraméteréről": [TOPICS.regression, TOPICS.sampleExam],
+  "SSE szabadságfoka": [TOPICS.regression, TOPICS.sampleExam],
+  "Hatványkitevős függvény b₁ paramétere": [TOPICS.regression, TOPICS.sampleExam],
+  "Exponenciális trend b₁ paramétere": [TOPICS.trend, TOPICS.sampleExam],
+  "Négytagú mozgóátlag": [TOPICS.trend, TOPICS.sampleExam],
+  "Nyers szezonális eltérés": [TOPICS.trend, TOPICS.sampleExam],
+  "Multiplikatív modell": [TOPICS.trend, TOPICS.sampleExam],
+  "Szezonindex jelentése": [TOPICS.trend, TOPICS.sampleExam],
+  "Korrigált szezonális eltérés": [TOPICS.trend, TOPICS.sampleExam],
+  "Szezonindex értelmezése": [TOPICS.trend, TOPICS.sampleExam]
 };
 
 window.quizTopics = Object.values(TOPICS);
 window.quizQuestions = window.quizQuestions.map(question => ({
   ...question,
-  topic: TOPIC_BY_TITLE[question.title] || "Egyéb"
+  topics: TOPICS_BY_TITLE[question.title] || ["Egyéb"],
+  topic: (TOPICS_BY_TITLE[question.title] || ["Egyéb"])[0]
 }));
