@@ -52,6 +52,49 @@ function getDay(date = new Date()) {
   }).format(date);
 }
 
+function isDateString(value) {
+  return /^\d{4}-\d{2}-\d{2}$/.test(value || "");
+}
+
+function getDateRange(request) {
+  const url = new URL(request.url);
+  let start = url.searchParams.get("start");
+  let end = url.searchParams.get("end");
+
+  start = isDateString(start) ? start : null;
+  end = isDateString(end) ? end : null;
+
+  if (start && end && start > end) {
+    [start, end] = [end, start];
+  }
+
+  return { start, end };
+}
+
+function buildDateFilter(range, prefix = "WHERE") {
+  const conditions = [];
+  const binds = [];
+
+  if (range.start) {
+    conditions.push("day >= ?");
+    binds.push(range.start);
+  }
+
+  if (range.end) {
+    conditions.push("day <= ?");
+    binds.push(range.end);
+  }
+
+  return {
+    clause: conditions.length ? `${prefix} ${conditions.join(" AND ")}` : "",
+    binds
+  };
+}
+
+function bindStatement(statement, binds) {
+  return binds.length ? statement.bind(...binds) : statement;
+}
+
 async function sha256(value) {
   const encoded = new TextEncoder().encode(value);
   const digest = await crypto.subtle.digest("SHA-256", encoded);
@@ -156,7 +199,25 @@ async function getSummary(env, origin, request) {
     return json({ error: "Unauthorized" }, { status: 401 }, origin, env);
   }
 
-  const daily = await env.DB.prepare(`
+  const range = getDateRange(request);
+  const totalFilter = buildDateFilter(range);
+  const dailyFilter = buildDateFilter(range);
+  const topicFilter = buildDateFilter(range, "AND");
+  const questionFilter = buildDateFilter(range, "AND");
+
+  const totals = await env.DB.prepare(`
+    SELECT
+      COUNT(*) AS events,
+      COUNT(DISTINCT visitor_hash) AS unique_visitors,
+      SUM(CASE WHEN event = 'page_view' THEN 1 ELSE 0 END) AS page_views,
+      SUM(CASE WHEN event = 'answer' THEN 1 ELSE 0 END) AS answers,
+      SUM(CASE WHEN event = 'answer' AND correct = 1 THEN 1 ELSE 0 END) AS correct_answers
+    FROM visit_events
+    ${totalFilter.clause}
+  `);
+  const totalsResult = await bindStatement(totals, totalFilter.binds).all();
+
+  const dailyStatement = env.DB.prepare(`
     SELECT
       day,
       COUNT(*) AS events,
@@ -164,12 +225,13 @@ async function getSummary(env, origin, request) {
       SUM(CASE WHEN event = 'page_view' THEN 1 ELSE 0 END) AS page_views,
       SUM(CASE WHEN event = 'answer' THEN 1 ELSE 0 END) AS answers
     FROM visit_events
+    ${dailyFilter.clause}
     GROUP BY day
     ORDER BY day DESC
-    LIMIT 30
-  `).all();
+  `);
+  const daily = await bindStatement(dailyStatement, dailyFilter.binds).all();
 
-  const topics = await env.DB.prepare(`
+  const topicsStatement = env.DB.prepare(`
     SELECT
       topic,
       COUNT(*) AS events,
@@ -178,11 +240,13 @@ async function getSummary(env, origin, request) {
       SUM(CASE WHEN event = 'answer' AND correct = 1 THEN 1 ELSE 0 END) AS correct_answers
     FROM visit_events
     WHERE topic IS NOT NULL
+      ${topicFilter.clause}
     GROUP BY topic
     ORDER BY events DESC
-  `).all();
+  `);
+  const topics = await bindStatement(topicsStatement, topicFilter.binds).all();
 
-  const questions = await env.DB.prepare(`
+  const questionsStatement = env.DB.prepare(`
     SELECT
       topic,
       question_title,
@@ -192,11 +256,15 @@ async function getSummary(env, origin, request) {
     FROM visit_events
     WHERE event = 'answer'
       AND question_title IS NOT NULL
+      ${questionFilter.clause}
     GROUP BY topic, question_title
     ORDER BY answers DESC, correct_answers ASC, question_title ASC
-  `).all();
+  `);
+  const questions = await bindStatement(questionsStatement, questionFilter.binds).all();
 
   return json({
+    range,
+    totals: totalsResult.results?.[0] || {},
     daily: daily.results || [],
     topics: topics.results || [],
     questions: questions.results || []
@@ -287,12 +355,30 @@ async function dashboardHtml(env, origin, request) {
     .ok { color: var(--green); font-weight: 800; }
     .bad { color: var(--red); font-weight: 800; }
     .toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
-    select { min-height: 38px; border: 1px solid var(--line); border-radius: 8px; background: #fff; padding: 0 12px; font: inherit; }
+    .filter-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+      gap: 14px;
+      margin: 0 0 18px;
+    }
+    .date-fields, .quick-filters { display: flex; align-items: end; gap: 10px; flex-wrap: wrap; }
+    .date-field { display: grid; gap: 6px; }
+    .date-field span {
+      color: var(--muted);
+      font-size: .78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    input, select { min-height: 38px; border: 1px solid var(--line); border-radius: 8px; background: #fff; padding: 0 12px; font: inherit; }
+    .quick-filters button.active { border-color: var(--blue); color: var(--blue); background: #eff6ff; }
     .question-cell { max-width: 460px; white-space: normal; line-height: 1.35; }
     @media (max-width: 760px) {
       header { display: block; }
       header button { margin-top: 12px; width: 100%; }
       .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .filter-panel { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -306,11 +392,32 @@ async function dashboardHtml(env, origin, request) {
       <button type="button" id="refresh">Frissítés</button>
     </header>
 
+    <section class="filter-panel" aria-label="Dátumszűrő">
+      <div class="date-fields">
+        <label class="date-field">
+          <span>Kezdő dátum</span>
+          <input type="date" id="dateStart">
+        </label>
+        <label class="date-field">
+          <span>Záró dátum</span>
+          <input type="date" id="dateEnd">
+        </label>
+        <button type="button" id="applyDate">Szűrés</button>
+      </div>
+      <div class="quick-filters" aria-label="Gyors dátumszűrők">
+        <button type="button" data-range="today">Ma</button>
+        <button type="button" data-range="yesterday">Tegnap</button>
+        <button type="button" data-range="7">Utolsó 7 nap</button>
+        <button type="button" data-range="30">Utolsó 30 nap</button>
+        <button type="button" data-range="all">Teljes időszak</button>
+      </div>
+    </section>
+
     <div class="cards">
-      <div class="card"><strong id="visitors">0</strong><span>mai egyedi látogató</span></div>
-      <div class="card"><strong id="views">0</strong><span>mai oldalmegnyitás</span></div>
-      <div class="card"><strong id="answers">0</strong><span>mai válasz</span></div>
-      <div class="card"><strong id="accuracy">0%</strong><span>mai helyesség</span></div>
+      <div class="card"><strong id="visitors">0</strong><span>egyedi látogató</span></div>
+      <div class="card"><strong id="views">0</strong><span>oldalmegnyitás</span></div>
+      <div class="card"><strong id="answers">0</strong><span>válasz</span></div>
+      <div class="card"><strong id="accuracy">0%</strong><span>helyesség</span></div>
     </div>
 
     <section>
