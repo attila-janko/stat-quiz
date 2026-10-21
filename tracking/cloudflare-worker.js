@@ -106,7 +106,10 @@ async function sha256(value) {
 async function getVisitorHash(request, env, day) {
   const ip = getClientIp(request);
   const userAgent = request.headers.get("User-Agent") || "unknown";
-  const salt = env.TRACKING_SALT || "change-me";
+  const salt = env.TRACKING_SALT;
+  if (!salt || salt === "change-me") {
+    throw new Error("TRACKING_SALT must be configured.");
+  }
   return sha256(`${salt}:${day}:${ip}:${userAgent}`);
 }
 
@@ -189,13 +192,17 @@ async function recordVisitFromQuery(request, env, origin) {
     headers: {
       "Content-Type": "image/gif",
       "Cache-Control": "no-store",
+      "Content-Security-Policy": "default-src 'none'; connect-src 'self'; img-src 'self'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
+      "Referrer-Policy": "no-referrer",
+      "X-Content-Type-Options": "nosniff",
+      "X-Frame-Options": "DENY",
       ...corsHeaders(origin, env)
     }
   });
 }
 
 async function getSummary(env, origin, request) {
-  if (env.DASHBOARD_TOKEN && !isAuthorized(request, env)) {
+  if (!isAuthorized(request, env)) {
     return json({ error: "Unauthorized" }, { status: 401 }, origin, env);
   }
 
@@ -272,7 +279,10 @@ async function getSummary(env, origin, request) {
 }
 
 function isAuthorized(request, env) {
-  const token = new URL(request.url).searchParams.get("token");
+  const urlToken = new URL(request.url).searchParams.get("token");
+  const authorization = request.headers.get("Authorization") || "";
+  const bearerToken = authorization.startsWith("Bearer ") ? authorization.slice(7) : null;
+  const token = bearerToken || urlToken;
   return Boolean(env.DASHBOARD_TOKEN && token && token === env.DASHBOARD_TOKEN);
 }
 
@@ -290,6 +300,7 @@ async function dashboardHtml(env, origin, request) {
 
   const url = new URL(request.url);
   const token = url.searchParams.get("token");
+  const serializedToken = JSON.stringify(token).replace(/</g, "\\u003c");
 
   return new Response(`<!doctype html>
 <html lang="hu">
@@ -485,7 +496,7 @@ async function dashboardHtml(env, origin, request) {
   </main>
 
   <script>
-    const token = ${JSON.stringify(token)};
+    const token = ${serializedToken};
     const dashboardState = {
       data: {
         daily: [],
@@ -506,6 +517,16 @@ async function dashboardHtml(env, origin, request) {
 
     function number(value) {
       return Number(value || 0);
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[character]);
     }
 
     function withAccuracy(rows) {
@@ -566,8 +587,8 @@ async function dashboardHtml(env, origin, request) {
         const accuracy = number(question.accuracy);
         return \`
           <tr>
-            <td class="question-cell">\${question.question_title || "Nincs kérdéscím"}</td>
-            <td>\${question.topic || "Nincs témakör"}</td>
+            <td class="question-cell">\${escapeHtml(question.question_title || "Nincs kérdéscím")}</td>
+            <td>\${escapeHtml(question.topic || "Nincs témakör")}</td>
             \${targetId === "questions" ? \`<td>\${number(question.unique_visitors)}</td>\` : ""}
             <td>\${answers}</td>
             <td>\${correct}</td>
@@ -582,7 +603,7 @@ async function dashboardHtml(env, origin, request) {
       const dailyRows = sortRows(dashboardState.data.daily, "daily");
       document.getElementById("daily").innerHTML = dailyRows.map(day => \`
         <tr>
-          <td>\${day.day}</td>
+          <td>\${escapeHtml(day.day)}</td>
           <td>\${number(day.unique_visitors)}</td>
           <td>\${number(day.page_views)}</td>
           <td>\${number(day.answers)}</td>
@@ -597,7 +618,7 @@ async function dashboardHtml(env, origin, request) {
         const accuracy = number(topic.accuracy);
         return \`
           <tr>
-            <td>\${topic.topic || "Nincs témakör"}</td>
+            <td>\${escapeHtml(topic.topic || "Nincs témakör")}</td>
             <td>\${number(topic.unique_visitors)}</td>
             <td>\${answers}</td>
             <td>\${correct}</td>
@@ -623,7 +644,11 @@ async function dashboardHtml(env, origin, request) {
     }
 
     async function load() {
-      const response = await fetch("/summary?token=" + encodeURIComponent(token), { cache: "no-store" });
+      history.replaceState(null, "", "/dashboard");
+      const response = await fetch("/summary", {
+        cache: "no-store",
+        headers: { Authorization: "Bearer " + token }
+      });
       const data = await response.json();
       dashboardState.data.daily = data.daily || [];
       dashboardState.data.topics = data.topics || [];
@@ -643,7 +668,7 @@ async function dashboardHtml(env, origin, request) {
       const topicFilter = document.getElementById("topicFilter");
       const previousFilter = topicFilter.value || "Összes";
       const topicNames = ["Összes", ...new Set(dashboardState.data.questions.map(item => item.topic).filter(Boolean))];
-      topicFilter.innerHTML = topicNames.map(topic => \`<option value="\${topic}">\${topic}</option>\`).join("");
+      topicFilter.innerHTML = topicNames.map(topic => \`<option value="\${escapeHtml(topic)}">\${escapeHtml(topic)}</option>\`).join("");
       topicFilter.value = topicNames.includes(previousFilter) ? previousFilter : "Összes";
       renderTables();
     }
